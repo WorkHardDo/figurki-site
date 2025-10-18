@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Индивидуальные фигурки по фото - FigureArt</title>
+    <style>
+        :root {
+            --primary: #007AFF;
+            --primary-light: #5AC8FA;
+            --secondary: #5856D6;
+            --background: #F2F2F7;
+            --surface: rgba(255, 255, 255, 0.8);
+            --text: #1C1C1E;
+            --text-secondary: #8E8E93;
+            --border: rgba(120, 120, 128, 0.16);
+            --shadow: rgba(0, 0, 0, 0.04);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #F2F2F7 0%, #E5E5EA 50%, #F0F0F5 100%);
+            background-attachment: fixed;
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Glass Effects */
+        .glass {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px var(--shadow);
+            border-radius: 16px;
+            transition: var(--transition);
+        }
+
+        .glass:hover {
+            background: rgba(255, 255, 255, 0.7);
+            box-shadow: 0 12px 48px rgba(0, 122, 255, 0.12);
+            transform: translateY(-2px);
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1px solid var(--border);
+            transition: var(--transition);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary:hover {
+            background: #0051D5;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 122, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.8);
+            color: var(--primary);
+            padding: 0.75rem 1.5rem;
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text);
+        }
+
+        /* Hero Section */
+        .hero {
+            margin-top: 80px;
+            padding: 5rem 5% 3rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 70%;
+            height: 150%;
+            background: radial-gradient(circle, rgba(0, 122, 255, 0.08) 0%, transparent 70%);
+            animation: float 20s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(120deg); }
+            66% { transform: translate(-20px, 20px) rotate(240deg); }
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--text) 0%, var(--primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease 0.4s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Section Styles */
+        .section {
+            padding: 4rem 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--text);
+        }
+
+        .section-subtitle {
+            font-size: 1.125rem;
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .feature-card {
+            padding: 2rem;
+            text-align: center;
+            transition: var(--transition);
+            cursor: default;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: 20px;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            transition: var(--transition);
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: var(--text);
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+        }
+
+        /* Gallery Grid */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            aspect-ratio: 3/4;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .gallery-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, 
+                rgba(0, 122, 255, 0.1) 0%, 
+                rgba(88, 86, 214, 0.1) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: var(--text-secondary);
+        }
+
+        /* Process Steps */
+        .process-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .process-step {
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: 50%;
+            color: white;
+            font-size: 1.75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 4px 16px rgba(0, 122, 255, 0.3);
+        }
+
+        .process-step h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+            color: var(--text);
+        }
+
+        .process-step p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Pricing Cards */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .pricing-card {
+            padding: 2.5rem;
+            text-align: center;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .pricing-card.featured {
+            background: rgba(0, 122, 255, 0.08);
+            border: 2px solid var(--primary);
+            transform: scale(1.05);
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-8px) scale(1.02);
+        }
+
+        .pricing-card.featured:hover {
+            transform: translateY(-8px) scale(1.07);
+        }
+
+        .pricing-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+        }
+
+        .pricing-card h3 {
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+
+        .pricing-card .price {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .pricing-card .price-period {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .pricing-features li {
+            padding: 0.75rem 0;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .pricing-features li:before {
+            content: '✓';
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        /* Order Form */
+        .order-form {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 3rem;
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--text);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: rgba(255, 255, 255, 0.6);
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+        }
+
+        .upload-area {
+            border: 2px dashed var(--border);
+            border-radius: 16px;
+            padding: 3rem;
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary);
+            background: rgba(0, 122, 255, 0.05);
+        }
+
+        .upload-area.dragover {
+            border-color: var(--primary);
+            background: rgba(0, 122, 255, 0.1);
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        /* Testimonials */
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .testimonial-card {
+            padding: 2rem;
+            transition: var(--transition);
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .testimonial-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-right: 1rem;
+        }
+
+        .testimonial-info h4 {
+            font-size: 1.125rem;
+            color: var(--text);
+            margin-bottom: 0.25rem;
+        }
+
+        .stars {
+            color: #FFD60A;
+            font-size: 1rem;
+        }
+
+        .testimonial-text {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            font-style: italic;
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, #1C1C1E 0%, #2C2C2E 100%);
+            color: white;
+            padding: 3rem 5%;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: var(--primary-light);
+        }
+
+        .footer-section a {
+            color: #E5E5EA;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .footer-section a:hover {
+            color: var(--primary-light);
+            transform: translateX(5px);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            width: 44px;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #8E8E93;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--surface);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                flex-direction: column;
+                padding: 2rem;
+                box-shadow: 0 10px 30px var(--shadow);
+                gap: 1.5rem;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .features-grid,
+            .pricing-grid,
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .order-form {
+                padding: 2rem;
+            }
+        }
+
+        /* Success Message */
+        .success-message {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: linear-gradient(135deg, #34C759 0%, #30D158 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(52, 199, 89, 0.3);
+            z-index: 1001;
+            animation: slideInRight 0.3s ease;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Success Message -->
+    <div class="success-message" id="successMessage">
+        ✓ Ваша заявка успешно отправлена!
+    </div>
+
+    <!-- Header -->
+    <header>
+        <nav>
+            <a href="#" class="logo">FigureArt</a>
+            <div class="nav-links" id="navLinks">
+                <a href="#gallery">Галерея</a>
+                <a href="#process">Процесс</a>
+                <a href="#pricing">Цены</a>
+                <a href="#testimonials">Отзывы</a>
+                <a href="#order" class="btn-primary">Заказать</a>
+            </div>
+            <button class="mobile-menu-toggle" id="menuToggle">☰</button>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Индивидуальные фигурки по фото</h1>
+        <p>Создайте уникальную фигурку себя или близкого человека с максимальной точностью деталей. Профессиональное качество изготовления и быстрая доставка.</p>
+        <div class="hero-buttons">
+            <a href="#order" class="btn-primary">Заказать сейчас</a>
+            <a href="#gallery" class="btn-secondary">Посмотреть примеры</a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="section">
+        <h2 class="section-title">Почему выбирают нас</h2>
+        <div class="features-grid">
+            <div class="feature-card glass">
+                <div class="feature-icon">🎨</div>
+                <h3>Детализация</h3>
+                <p>Максимальная точность передачи черт лица, причёски и одежды по вашему фото</p>
+            </div>
+            <div class="feature-card glass">
+                <div class="feature-icon">⚡</div>
+                <h3>Быстрое изготовление</h3>
+                <p>Создаём вашу фигурку за 7-14 рабочих дней с момента подтверждения дизайна</p>
+            </div>
+            <div class="feature-card glass">
+                <div class="feature-icon">✨</div>
+                <h3>Премиум качество</h3>
+                <p>Используем только качественные материалы и современные технологии 3D-печати</p>
+            </div>
+            <div class="feature-card glass">
+                <div class="feature-icon">🎁</div>
+                <h3>Идеальный подарок</h3>
+                <p>Уникальный и запоминающийся подарок для любого повода и праздника</p>
+            </div>
+            <div class="feature-card glass">
+                <div class="feature-icon">📦</div>
+                <h3>Безопасная доставка</h3>
+                <p>Упаковываем в индивидуальную подарочную коробку с гарантией сохранности</p>
+            </div>
+            <div class="feature-card glass">
+                <div class="feature-icon">💯</div>
+                <h3>Гарантия качества</h3>
+                <p>Бесплатная доработка при несоответствии ожиданиям или возврат средств</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="section" id="gallery">
+        <h2 class="section-title">Примеры наших работ</h2>
+        <p class="section-subtitle">Посмотрите, как мы превращаем обычные фотографии в уникальные персонализированные фигурки</p>
+        <div class="gallery-grid">
+            <div class="gallery-item glass">
+                <div class="gallery-placeholder">👤</div>
+            </div>
+            <div class="gallery-item glass">
+                <div class="gallery-placeholder">🧑</div>
+            </div>
+            <div class="gallery-item glass">
+                <div class="gallery-placeholder">👩</div>
+            </div>
+            <div class="gallery-item glass">
+                <div class="gallery-placeholder">🧔</div>
+            </div>
+            <div class="gallery-item glass">
+                <div class="gallery-placeholder">👨</div>
+            </div>
+            <div class="gallery-item glass">
+                <div class="gallery-placeholder">🧑‍🎨</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Section -->
+    <section class="section" id="process">
+        <h2 class="section-title">Как это работает</h2>
+        <p class="section-subtitle">Простой процесс от заказа до получения вашей уникальной фигурки</p>
+        <div class="process-steps">
+            <div class="process-step glass">
+                <div class="step-number">1</div>
+                <h3>Загрузите фото</h3>
+                <p>Отправьте нам качественное фото в полный рост или портрет</p>
+            </div>
+            <div class="process-step glass">
+                <div class="step-number">2</div>
+                <h3>Согласование</h3>
+                <p>Мы создадим 3D-макет и отправим вам на утверждение</p>
+            </div>
+            <div class="process-step glass">
+                <div class="step-number">3</div>
+                <h3>Производство</h3>
+                <p>Изготавливаем фигурку с помощью профессионального 3D-принтера</p>
+            </div>
+            <div class="process-step glass">
+                <div class="step-number">4</div>
+                <h3>Получите заказ</h3>
+                <p>Доставим готовую фигурку в красивой подарочной упаковке</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="section" id="pricing">
+        <h2 class="section-title">Тарифы и цены</h2>
+        <p class="section-subtitle">Выберите подходящий размер и опции для вашей фигурки</p>
+        <div class="pricing-grid">
+            <div class="pricing-card glass">
+                <h3>Базовый</h3>
+                <div class="price">4 990₽</div>
+                <p class="price-period">за фигурку 15 см</p>
+                <ul class="pricing-features">
+                    <li>Высота 15 см</li>
+                    <li>Цветная 3D-печать</li>
+                    <li>Одна поза на выбор</li>
+                    <li>Базовая одежда</li>
+                    <li>Срок изготовления 14 дней</li>
+                    <li>Подарочная упаковка</li>
+                </ul>
+                <a href="#order" class="btn-primary">Выбрать</a>
+            </div>
+            
+            <div class="pricing-card glass featured">
+                <div class="pricing-badge">Популярный</div>
+                <h3>Премиум</h3>
+                <div class="price">7 990₽</div>
+                <p class="price-period">за фигурку 20 см</p>
+                <ul class="pricing-features">
+                    <li>Высота 20 см</li>
+                    <li>Детальная 3D-печать</li>
+                    <li>Любая поза</li>
+                    <li>Детальная одежда</li>
+                    <li>Аксессуары</li>
+                    <li>Срок изготовления 10 дней</li>
+                    <li>Премиум упаковка</li>
+                    <li>Именная подставка</li>
+                </ul>
+                <a href="#order" class="btn-primary">Выбрать</a>
+            </div>
+            
+            <div class="pricing-card glass">
+                <h3>Делюкс</h3>
+                <div class="price">12 990₽</div>
+                <p class="price-period">за фигурку 30 см</p>
+                <ul class="pricing-features">
+                    <li>Высота 30 см</li>
+                    <li>Максимальная детализация</li>
+                    <li>Любая сложная поза</li>
+                    <li>Кастомная одежда</li>
+                    <li>Все аксессуары</li>
+                    <li>Приоритетное изготовление</li>
+                    <li>Срок изготовления 7 дней</li>
+                    <li>Deluxe упаковка</li>
+                    <li>Кастомная подставка</li>
+                    <li>Сертификат подлинности</li>
+                </ul>
+                <a href="#order" class="btn-primary">Выбрать</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Order Form -->
+    <section class="section" id="order">
+        <h2 class="section-title">Оформить заказ</h2>
+        <p class="section-subtitle">Заполните форму и загрузите фото, мы свяжемся с вами в течение 2 часов</p>
+        <form class="order-form glass" id="orderForm">
+            <div class="form-group">
+                <label for="name">Ваше имя</label>
+                <input type="text" id="name" name="name" required placeholder="Иван Иванов">
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required placeholder="ivan@example.com">
+            </div>
+            
+            <div class="form-group">
+                <label for="phone">Телефон</label>
+                <input type="tel" id="phone" name="phone" required placeholder="+7 (999) 123-45-67">
+            </div>
+            
+            <div class="form-group">
+                <label for="package">Выберите тариф</label>
+                <select id="package" name="package" required>
+                    <option value="">Выберите тариф</option>
+                    <option value="basic">Базовый - 4 990₽</option>
+                    <option value="premium">Премиум - 7 990₽</option>
+                    <option value="deluxe">Делюкс - 12 990₽</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Загрузите фото</label>
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">📸</div>
+                    <p><strong>Нажмите для выбора</strong> или перетащите фото сюда</p>
+                    <p style="font-size: 0.875rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                        Поддерживаемые форматы: JPG, PNG (макс. 10 МБ)
+                    </p>
+                </div>
+                <input type="file" id="photoUpload" name="photo" accept="image/*" class="file-input" required>
+                <div id="fileName" style="margin-top: 1rem; color: var(--primary); font-weight: 600;"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="comments">Дополнительные пожелания</label>
+                <textarea id="comments" name="comments" rows="4" placeholder="Опишите желаемую позу, одежду, аксессуары..."></textarea>
+            </div>
+            
+            <button type="submit" class="btn-primary" style="width: 100%; font-size: 1.125rem; padding: 1rem;">
+                Отправить заявку
+            </button>
+        </form>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="section" id="testimonials">
+        <h2 class="section-title">Отзывы клиентов</h2>
+        <p class="section-subtitle">Более 500 довольных клиентов уже получили свои уникальные фигурки</p>
+        <div class="testimonials-grid">
+            <div class="testimonial-card glass">
+                <div class="testimonial-header">
+                    <div class="avatar">АС</div>
+                    <div class="testimonial-info">
+                        <h4>Анна Смирнова</h4>
+                        <div class="stars">★★★★★</div>
+                    </div>
+                </div>
+                <p class="testimonial-text">
+                    "Заказывала фигурку мужа на День рождения. Результат превзошёл все ожидания! Детали одежды, лицо - всё очень похоже. Муж был в восторге!"
+                </p>
+            </div>
+            
+            <div class="testimonial-card glass">
+                <div class="testimonial-header">
+                    <div class="avatar">ДК</div>
+                    <div class="testimonial-info">
+                        <h4>Дмитрий Козлов</h4>
+                        <div class="stars">★★★★★</div>
+                    </div>
+                </div>
+                <p class="testimonial-text">
+                    "Отличное качество и быстрая работа! Заказывал фигурку себя в костюме супергероя. Получилось потрясающе, стоит на рабочем столе и радует каждый день."
+                </p>
+            </div>
+            
+            <div class="testimonial-card glass">
+                <div class="testimonial-header">
+                    <div class="avatar">ЕП</div>
+                    <div class="testimonial-info">
+                        <h4>Елена Петрова</h4>
+                        <div class="stars">★★★★★</div>
+                    </div>
+                </div>
+                <p class="testimonial-text">
+                    "Заказала фигурки всей семьи - папа, мама и двое детей. Теперь это наша семейная реликвия! Спасибо за профессионализм и внимание к деталям."
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>FigureArt</h3>
+                <p style="color: #8E8E93; line-height: 1.8;">
+                    Мы создаём уникальные персонализированные фигурки высочайшего качества с 2018 года.
+                </p>
+                <div class="social-links">
+                    <a href="#">ВК</a>
+                    <a href="#">TG</a>
+                    <a href="#">IG</a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Услуги</h3>
+                <a href="#">Индивидуальные фигурки</a>
+                <a href="#">Семейные композиции</a>
+                <a href="#">Фигурки для пар</a>
+                <a href="#">Свадебные фигурки</a>
+                <a href="#">Аниме стиль</a>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Информация</h3>
+                <a href="#">О компании</a>
+                <a href="#">Доставка и оплата</a>
+                <a href="#">Гарантии</a>
+                <a href="#">FAQ</a>
+                <a href="#">Контакты</a>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Контакты</h3>
+                <a href="tel:+79991234567">+7 (999) 123-45-67</a>
+                <a href="mailto:info@figureart.ru">info@figureart.ru</a>
+                <p style="color: #8E8E93; margin-top: 1rem;">
+                    Москва, ул. Примерная, д. 123<br>
+                    Пн-Пт: 10:00 - 19:00
+                </p>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2025 FigureArt. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu Toggle
+        const menuToggle = document.getElementById('menuToggle');
+        const navLinks = document.getElementById('navLinks');
+        
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // Smooth Scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    navLinks.classList.remove('active');
+                }
+            });
+        });
+
+        // File Upload Handler
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('photoUpload');
+        const fileName = document.getElementById('fileName');
+
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                updateFileName(e.dataTransfer.files[0].name);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length) {
+                updateFileName(e.target.files[0].name);
+            }
+        });
+
+        function updateFileName(name) {
+            fileName.textContent = `✓ Выбран файл: ${name}`;
+        }
+
+        // Form Submission Handler
+        const orderForm = document.getElementById('orderForm');
+        const successMessage = document.getElementById('successMessage');
+
+        orderForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Simulate form submission
+            console.log('Form submitted with data:', {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                package: document.getElementById('package').value,
+                comments: document.getElementById('comments').value,
+                photo: fileInput.files[0]?.name
+            });
+
+            // Show success message
+            successMessage.classList.add('show');
+            
+            // Reset form
+            orderForm.reset();
+            fileName.textContent = '';
+
+            // Hide success message after 5 seconds
+            setTimeout(() => {
+                successMessage.classList.remove('show');
+            }, 5000);
+
+            // Scroll to top
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Header scroll effect
+        let lastScroll = 0;
+        const header = document.querySelector('header');
+
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            
+            if (currentScroll > 100) {
+                header.style.boxShadow = '0 4px 24px rgba(0, 0, 0, 0.08)';
+            } else {
+                header.style.boxShadow = 'none';
+            }
+            
+            lastScroll = currentScroll;
+        });
+
+        // Gallery item animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.gallery-item, .feature-card, .process-step, .pricing-card, .testimonial-card').forEach(item => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(30px)';
+            item.style.transition = 'all 0.6s ease';
+            observer.observe(item);
+        });
+    </script>
+</body>
+</html>

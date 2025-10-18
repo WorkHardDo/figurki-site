@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Контакты | FigureArt</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
+      background: linear-gradient(135deg, #fafafa 0%, #f0f0ff 50%, #fafaff 100%);
+      background-attachment: fixed;
+      color: #1a1a1a;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 1.5rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .glass-card:hover {
+      background: rgba(255, 255, 255, 0.7);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.1);
+    }
+
+    .glass-button {
+      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.75rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      display: inline-block;
+      width: 100%;
+    }
+
+    .glass-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(99, 102, 241, 0.4);
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #3b47d1 0%, #6366f1 50%, #4f46e5 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+    }
+
+    nav {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #6366f1;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: #4a5568;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: #6366f1;
+    }
+
+    main {
+      padding-top: 5rem;
+    }
+
+    .hero {
+      padding: 4rem 2rem;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .hero p {
+      font-size: 1.25rem;
+      color: #6b7280;
+      max-width: 800px;
+      margin: 0 auto 2rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .section {
+      padding: 3rem 0;
+    }
+
+    .grid {
+      display: grid;
+      gap: 2rem;
+    }
+
+    .grid-2 {
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+
+    .grid-4 {
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+
+    .card {
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .card-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 1rem;
+      background: linear-gradient(135deg, #93c5fd 0%, #6366f1 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      color: white;
+      font-size: 1.75rem;
+    }
+
+    .card h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .card p {
+      color: #4a5568;
+      font-weight: 500;
+      margin-bottom: 0.25rem;
+    }
+
+    .card small {
+      color: #6b7280;
+      font-size: 0.875rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 0.75rem;
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(12px);
+      font-family: inherit;
+      font-size: 1rem;
+      transition: all 0.3s;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #6366f1;
+      background: rgba(255, 255, 255, 0.7);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 150px;
+    }
+
+    .map-placeholder {
+      height: 400px;
+      background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #6b7280;
+      font-weight: 500;
+      border-radius: 1.5rem;
+    }
+
+    footer {
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(24px);
+      border-top: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 3rem 2rem;
+      margin-top: 4rem;
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+    }
+
+    .footer-section h3 {
+      margin-bottom: 1rem;
+      font-size: 1.125rem;
+    }
+
+    .footer-section ul {
+      list-style: none;
+    }
+
+    .footer-section ul li {
+      margin-bottom: 0.5rem;
+      color: #6b7280;
+    }
+
+    .footer-section a {
+      color: #6b7280;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .footer-section a:hover {
+      color: #6366f1;
+    }
+
+    .footer-bottom {
+      text-align: center;
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
+      color: #6b7280;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+
+      .hero h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="/" class="logo">FigureArt</a>
+      <ul class="nav-links">
+        <li><a href="/">Главная</a></li>
+        <li><a href="#services">Услуги</a></li>
+        <li><a href="#about">О нас</a></li>
+        <li><a href="#contact">Контакты</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <h1>Свяжитесь с <span class="gradient-text">нами</span></h1>
+        <p>Мы всегда рады ответить на ваши вопросы и помочь создать идеальную фигурку</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="grid grid-4" style="margin-bottom: 4rem;">
+          <div class="glass-card card">
+            <div class="card-icon">📞</div>
+            <h3>Телефон</h3>
+            <p>+7 (999) 123-45-67</p>
+            <small>Звоните в любое время</small>
+          </div>
+          <div class="glass-card card">
+            <div class="card-icon">📧</div>
+            <h3>Email</h3>
+            <p>info@figureart.ru</p>
+            <small>Ответим в течение 24 часов</small>
+          </div>
+          <div class="glass-card card">
+            <div class="card-icon">📍</div>
+            <h3>Адрес</h3>
+            <p>Москва, Россия</p>
+            <small>Работаем по всей России</small>
+          </div>
+          <div class="glass-card card">
+            <div class="card-icon">🕐</div>
+            <h3>Режим работы</h3>
+            <p>Пн-Пт: 9:00 - 20:00</p>
+            <small>Сб-Вс: 10:00 - 18:00</small>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="contact">
+      <div class="container">
+        <div class="grid grid-2" style="gap: 3rem; align-items: start;">
+          <div class="glass-card" style="padding: 2.5rem;">
+            <h2 style="font-size: 2rem; margin-bottom: 1rem;">Напишите нам</h2>
+            <p style="color: #6b7280; margin-bottom: 2rem;">Заполните форму, и мы свяжемся с вами в ближайшее время</p>
+            <form>
+              <div class="form-group">
+                <label for="name">Ваше имя *</label>
+                <input type="text" id="name" required placeholder="Иван Иванов">
+              </div>
+              <div class="form-group">
+                <label for="email">Email *</label>
+                <input type="email" id="email" required placeholder="ivan@example.com">
+              </div>
+              <div class="form-group">
+                <label for="phone">Телефон</label>
+                <input type="tel" id="phone" placeholder="+7 (999) 123-45-67">
+              </div>
+              <div class="form-group">
+                <label for="message">Сообщение *</label>
+                <textarea id="message" required placeholder="Расскажите, чем мы можем помочь..."></textarea>
+              </div>
+              <button type="submit" class="glass-button">Отправить сообщение</button>
+            </form>
+          </div>
+
+          <div>
+            <div class="glass-card" style="padding: 2.5rem; margin-bottom: 2rem;">
+              <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">Часто задаваемые вопросы</h3>
+              <div style="margin-bottom: 1.5rem;">
+                <h4 style="font-weight: 600; margin-bottom: 0.5rem;">Сколько времени занимает изготовление?</h4>
+                <p style="color: #6b7280; font-size: 0.95rem;">В среднем 7-14 дней в зависимости от сложности заказа.</p>
+              </div>
+              <div style="margin-bottom: 1.5rem;">
+                <h4 style="font-weight: 600; margin-bottom: 0.5rem;">Какие фотографии нужны?</h4>
+                <p style="color: #6b7280; font-size: 0.95rem;">Качественные фото в полный рост и крупный план лица.</p>
+              </div>
+              <div style="margin-bottom: 1.5rem;">
+                <h4 style="font-weight: 600; margin-bottom: 0.5rem;">Доставка по России?</h4>
+                <p style="color: #6b7280; font-size: 0.95rem;">Да, доставляем во все регионы РФ курьером и почтой.</p>
+              </div>
+              <div>
+                <h4 style="font-weight: 600; margin-bottom: 0.5rem;">Можно ли внести изменения?</h4>
+                <p style="color: #6b7280; font-size: 0.95rem;">Да, предоставляем бесплатные правки на этапе согласования.</p>
+              </div>
+            </div>
+
+            <div class="glass-card" style="padding: 2.5rem;">
+              <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">Социальные сети</h3>
+              <div style="display: flex; gap: 1rem;">
+                <a href="#" style="width: 48px; height: 48px; border-radius: 0.75rem; background: linear-gradient(135deg, #93c5fd 0%, #6366f1 100%); display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; font-size: 1.25rem;">📷</a>
+                <a href="#" style="width: 48px; height: 48px; border-radius: 0.75rem; background: linear-gradient(135deg, #93c5fd 0%, #6366f1 100%); display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; font-size: 1.25rem;">💬</a>
+                <a href="#" style="width: 48px; height: 48px; border-radius: 0.75rem; background: linear-gradient(135deg, #93c5fd 0%, #6366f1 100%); display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; font-size: 1.25rem;">📱</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="glass-card">
+          <div class="map-placeholder">
+            <p>🗺️ Карта с нашим местоположением</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>FigureArt</h3>
+        <p style="color: #6b7280;">Создаём уникальные персонализированные фигурки по фотографиям</p>
+      </div>
+      <div class="footer-section">
+        <h3>Услуги</h3>
+        <ul>
+          <li><a href="#">Индивидуальные фигурки</a></li>
+          <li><a href="#">Семейные композиции</a></li>
+          <li><a href="#">Парные фигурки</a></li>
+          <li><a href="#">Свадебные фигурки</a></li>
+          <li><a href="#">Аниме стиль</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Контакты</h3>
+        <ul>
+          <li>📞 +7 (999) 123-45-67</li>
+          <li>📧 info@figureart.ru</li>
+          <li>📍 Москва, Россия</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2024 FigureArt. Все права защищены.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.querySelector('form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('Спасибо за ваше сообщение! Мы свяжемся с вами в ближайшее время.');
+      this.reset();
+    });
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>

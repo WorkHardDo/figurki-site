@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Фигурки в Разных Стилях | FigureArt</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
+      background: linear-gradient(135deg, #fafafa 0%, #f5f0ff 50%, #fff5f0 100%);
+      background-attachment: fixed;
+      color: #1a1a1a;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 1.5rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .glass-card:hover {
+      background: rgba(255, 255, 255, 0.7);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.1);
+    }
+
+    .glass-button {
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.75rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .glass-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(59, 130, 246, 0.4);
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 50%, #1d4ed8 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+    }
+
+    nav {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #3b82f6;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: #4a5568;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: #3b82f6;
+    }
+
+    main {
+      padding-top: 5rem;
+    }
+
+    .hero {
+      padding: 4rem 2rem;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .hero p {
+      font-size: 1.25rem;
+      color: #6b7280;
+      max-width: 800px;
+      margin: 0 auto 2rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .section {
+      padding: 4rem 0;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .section-subtitle {
+      text-align: center;
+      font-size: 1.125rem;
+      color: #6b7280;
+      margin-bottom: 3rem;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .grid {
+      display: grid;
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .grid-2 {
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+
+    .grid-3 {
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+
+    .grid-4 {
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+
+    .card {
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .card-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 1rem;
+      background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      color: white;
+      font-size: 1.5rem;
+    }
+
+    .card h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .card p {
+      color: #6b7280;
+      font-size: 0.875rem;
+    }
+
+    .gallery-item {
+      position: relative;
+      border-radius: 1.5rem;
+      overflow: hidden;
+      height: 300px;
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .gallery-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 1.5rem;
+      color: white;
+    }
+
+    .pricing-card {
+      padding: 2.5rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .price {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #3b82f6;
+      margin: 1rem 0;
+    }
+
+    .price-features {
+      list-style: none;
+      margin: 2rem 0;
+      text-align: left;
+    }
+
+    .price-features li {
+      padding: 0.5rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .price-features li:before {
+      content: "✓";
+      color: #3b82f6;
+      font-weight: 700;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 0.75rem;
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(12px);
+      font-family: inherit;
+      font-size: 1rem;
+      transition: all 0.3s;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #3b82f6;
+      background: rgba(255, 255, 255, 0.7);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    .file-upload {
+      border: 2px dashed rgba(59, 130, 246, 0.3);
+      border-radius: 0.75rem;
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .file-upload:hover {
+      border-color: #3b82f6;
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    .file-upload input {
+      display: none;
+    }
+
+    .testimonial {
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .testimonial-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+      margin: 0 auto 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 1.5rem;
+    }
+
+    .testimonial-text {
+      font-style: italic;
+      color: #4a5568;
+      margin-bottom: 1rem;
+    }
+
+    .testimonial-author {
+      font-weight: 600;
+    }
+
+    footer {
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(24px);
+      border-top: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 3rem 2rem;
+      margin-top: 4rem;
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+    }
+
+    .footer-section h3 {
+      margin-bottom: 1rem;
+      font-size: 1.125rem;
+    }
+
+    .footer-section ul {
+      list-style: none;
+    }
+
+    .footer-section ul li {
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-section a {
+      color: #6b7280;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .footer-section a:hover {
+      color: #3b82f6;
+    }
+
+    .footer-bottom {
+      text-align: center;
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
+      color: #6b7280;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+
+      .hero h1 {
+        font-size: 2rem;
+      }
+
+      .section-title {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="/" class="logo">FigureArt</a>
+      <ul class="nav-links">
+        <li><a href="/">Главная</a></li>
+        <li><a href="#services">Стили</a></li>
+        <li><a href="#gallery">Галерея</a></li>
+        <li><a href="#pricing">Цены</a></li>
+        <li><a href="#contact">Контакты</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <h1>Фигурки в <span class="gradient-text">Разных Стилях</span></h1>
+        <p>Выберите уникальный стиль для вашей фигурки: от реализма до фантастики, от карикатуры до супергероя!</p>
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+          <a href="#order" class="glass-button">Заказать сейчас</a>
+          <a href="#gallery" class="glass-button" style="background: rgba(255, 255, 255, 0.5); color: #3b82f6;">Примеры работ</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="services">
+      <div class="container">
+        <h2 class="section-title">Доступные <span class="gradient-text">стили</span></h2>
+        <p class="section-subtitle">Создайте фигурку в любом стиле на ваш выбор</p>
+        <div class="grid grid-3">
+          <div class="glass-card card">
+            <div class="card-icon">🎨</div>
+            <h3>Реалистичный</h3>
+            <p>Максимально точное сходство с фото</p>
+          </div>
+          <div class="glass-card card">
+            <div class="card-icon">😄</div>
+            <h3>Карикатурный</h3>
+            <p>Забавная карикатура с характером</p>
+          </div>
+          <div class="glass-card card">
+            <div class="card-icon">🦸</div>
+            <h3>Супергеройский</h3>
+            <p>Вы в образе супергероя</p>
+          </div>
+          <div class="glass-card card">
+            <div class="card-icon">🧙</div>
+            <h3>Фантастический</h3>
+            <p>Эльфы, магия, фентези персонажи</p>
+          </div>
+          <div class="glass-card card">
+            <div class="card-icon">🎮</div>
+            <h3>Игровой</h3>
+            <p>В стиле видеоигр и киберпанка</p>
+          </div>
+          <div class="glass-card card">
+            <div class="card-icon">🎭</div>
+            <h3>Кастомный</h3>
+            <p>Любой другой стиль на заказ</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="gallery">
+      <div class="container">
+        <h2 class="section-title">Наши <span class="gradient-text">работы</span></h2>
+        <p class="section-subtitle">Посмотрите примеры фигурок в разных стилях</p>
+        <div class="grid grid-3">
+          <div class="glass-card gallery-item">
+            <img src="https://images.unsplash.com/photo-1633966887768-c6c9742d0dfa?w=800&q=80" alt="Реалистичный стиль">
+            <div class="gallery-overlay">
+              <h3>Реалистичный стиль</h3>
+              <p>Фотореалистичная детализация</p>
+            </div>
+          </div>
+          <div class="glass-card gallery-item">
+            <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=800&q=80" alt="Карикатура">
+            <div class="gallery-overlay">
+              <h3>Карикатурный стиль</h3>
+              <p>Забавная и узнаваемая карикатура</p>
+            </div>
+          </div>
+          <div class="glass-card gallery-item">
+            <img src="https://images.unsplash.com/photo-1635805737707-575885ab0820?w=800&q=80" alt="Супергерой">
+            <div class="gallery-overlay">
+              <h3>Супергеройский стиль</h3>
+              <p>Эпичный образ супергероя</p>
+            </div>
+          </div>
+          <div class="glass-card gallery-item">
+            <img src="https://images.unsplash.com/photo-1509664158680-07c5423e7df7?w=800&q=80" alt="Фентези">
+            <div class="gallery-overlay">
+              <h3>Фантастический стиль</h3>
+              <p>Магический фентези персонаж</p>
+            </div>
+          </div>
+          <div class="glass-card gallery-item">
+            <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800&q=80" alt="Игровой стиль">
+            <div class="gallery-overlay">
+              <h3>Игровой стиль</h3>
+              <p>Киберпанк и видеоигры</p>
+            </div>
+          </div>
+          <div class="glass-card gallery-item">
+            <img src="https://images.unsplash.com/photo-1614741118887-7a4ee193a5fa?w=800&q=80" alt="Кастомный">
+            <div class="gallery-overlay">
+              <h3>Кастомный стиль</h3>
+              <p>Уникальный авторский дизайн</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title">Как <span class="gradient-text">это работает?</span></h2>
+        <p class="section-subtitle">Простой процесс создания фигурки</p>
+        <div class="grid grid-4">
+          <div class="glass-card card">
+            <div class="card-icon">1</div>
+            <h3>Выберите стиль</h3>
+            <p>Определитесь с желаемым стилем фигурки</p>
+          </div>
+          <div class="glass-card card">
+            <div class="card-icon">2</div>
+            <h3>Загрузите фото</h3>
+            <p>Отправьте фото и опишите идею</p>
+          </div>
+          <div class="glass-card card">
+            <div class="card-icon">3</div>
+            <h3>Утверждение</h3>
+            <p>Посмотрите эскиз и 3D-модель</p>
+          </div>
+          <div class="glass-card card">
+            <div class="card-icon">4</div>
+            <h3>Получите фигурку</h3>
+            <p>Доставим за 14-21 день</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="pricing">
+      <div class="container">
+        <h2 class="section-title">Наши <span class="gradient-text">тарифы</span></h2>
+        <p class="section-subtitle">Цена зависит от сложности выбранного стиля</p>
+        <div class="grid grid-3">
+          <div class="glass-card pricing-card">
+            <h3>Базовый</h3>
+            <div class="price">от 13 900₽</div>
+            <p style="color: #6b7280; margin-bottom: 1.5rem;">За фигурку</p>
+            <ul class="price-features">
+              <li>Размер 12-15 см</li>
+              <li>Простые стили</li>
+              <li>Стандартная детализация</li>
+              <li>1 бесплатная правка</li>
+              <li>Доставка по России</li>
+            </ul>
+            <a href="#order" class="glass-button" style="width: 100%;">Выбрать</a>
+          </div>
+          <div class="glass-card pricing-card">
+            <div style="position: absolute; top: 1rem; right: 1rem; background: #3b82f6; color: white; padding: 0.25rem 0.75rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 600;">ПОПУЛЯРНЫЙ</div>
+            <h3>Премиум</h3>
+            <div class="price">от 19 900₽</div>
+            <p style="color: #6b7280; margin-bottom: 1.5rem;">За фигурку</p>
+            <ul class="price-features">
+              <li>Размер 18-20 см</li>
+              <li>Любые стили</li>
+              <li>Высокая детализация</li>
+              <li>3 бесплатные правки</li>
+              <li>Экспресс-доставка</li>
+              <li>Тематическая подставка</li>
+            </ul>
+            <a href="#order" class="glass-button" style="width: 100%;">Выбрать</a>
+          </div>
+          <div class="glass-card pricing-card">
+            <h3>Делюкс</h3>
+            <div class="price">от 29 900₽</div>
+            <p style="color: #6b7280; margin-bottom: 1.5rem;">За фигурку</p>
+            <ul class="price-features">
+              <li>Размер 22-25 см</li>
+              <li>Эксклюзивные стили</li>
+              <li>Максимальная детализация</li>
+              <li>Неограниченные правки</li>
+              <li>VIP доставка</li>
+              <li>Дизайнерская подставка</li>
+              <li>Спецэффекты и аксессуары</li>
+            </ul>
+            <a href="#order" class="glass-button" style="width: 100%;">Выбрать</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="order">
+      <div class="container">
+        <h2 class="section-title">Оформить <span class="gradient-text">заказ</span></h2>
+        <p class="section-subtitle">Заполните форму, и мы свяжемся с вами</p>
+        <div style="max-width: 600px; margin: 0 auto;">
+          <form class="glass-card" style="padding: 2.5rem;">
+            <div class="form-group">
+              <label for="name">Ваше имя *</label>
+              <input type="text" id="name" required placeholder="Иван Иванов">
+            </div>
+            <div class="form-group">
+              <label for="email">Email *</label>
+              <input type="email" id="email" required placeholder="ivan@example.com">
+            </div>
+            <div class="form-group">
+              <label for="phone">Телефон *</label>
+              <input type="tel" id="phone" required placeholder="+7 (999) 123-45-67">
+            </div>
+            <div class="form-group">
+              <label for="plan">Выберите тариф *</label>
+              <select id="plan" required>
+                <option value="">Выберите тариф</option>
+                <option value="basic">Базовый (от 13 900₽)</option>
+                <option value="premium">Премиум (от 19 900₽)</option>
+                <option value="deluxe">Делюкс (от 29 900₽)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="style">Выберите стиль *</label>
+              <select id="style" required>
+                <option value="">Выберите стиль</option>
+                <option value="realistic">Реалистичный</option>
+                <option value="cartoon">Карикатурный</option>
+                <option value="superhero">Супергеройский</option>
+                <option value="fantasy">Фантастический</option>
+                <option value="gaming">Игровой</option>
+                <option value="custom">Кастомный (опишите в комментариях)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="message">Описание идеи и пожелания *</label>
+              <textarea id="message" required placeholder="Расскажите подробно о желаемом стиле, деталях, аксессуарах..."></textarea>
+            </div>
+            <div class="form-group">
+              <label>Загрузите ваше фото</label>
+              <div class="file-upload" onclick="document.getElementById('photos').click()">
+                <input type="file" id="photos" multiple accept="image/*">
+                <div style="font-size: 2rem; margin-bottom: 0.5rem;">📁</div>
+                <p style="color: #6b7280;">Нажмите или перетащите фото</p>
+              </div>
+            </div>
+            <button type="submit" class="glass-button" style="width: 100%; padding: 1rem;">Отправить заказ</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title">Отзывы <span class="gradient-text">клиентов</span></h2>
+        <div class="grid grid-3">
+          <div class="glass-card testimonial">
+            <div class="testimonial-avatar">ДК</div>
+            <p class="testimonial-text">"Заказал себя в образе супергероя. Результат превзошёл ожидания! Стоит на рабочем столе."</p>
+            <p class="testimonial-author">Дмитрий Королёв</p>
+          </div>
+          <div class="glass-card testimonial">
+            <div class="testimonial-avatar">ЕМ</div>
+            <p class="testimonial-text">"Карикатурная фигурка получилась невероятно забавной! Подарила мужу, он в восторге."</p>
+            <p class="testimonial-author">Елена Миронова</p>
+          </div>
+          <div class="glass-card testimonial">
+            <div class="testimonial-avatar">АВ</div>
+            <p class="testimonial-text">"Фигурка в фентези стиле для DnD партии. Мастера сделали именно то, что я хотел!"</p>
+            <p class="testimonial-author">Алексей Волков</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>FigureArt</h3>
+        <p style="color: #6b7280;">Создаём уникальные персонализированные фигурки</p>
+      </div>
+      <div class="footer-section">
+        <h3>Услуги</h3>
+        <ul>
+          <li><a href="#">Индивидуальные</a></li>
+          <li><a href="#">Семейные</a></li>
+          <li><a href="#">Парные</a></li>
+          <li><a href="#">Свадебные</a></li>
+          <li><a href="#">Аниме</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Контакты</h3>
+        <ul>
+          <li>📞 +7 (999) 123-45-67</li>
+          <li>📧 info@figureart.ru</li>
+          <li>📍 Москва, Россия</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2024 FigureArt. Все права защищены.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('photos').addEventListener('change', function(e) {
+      const fileUpload = this.parentElement;
+      const files = e.target.files;
+      if (files.length > 0) {
+        fileUpload.innerHTML = `
+          <div style="font-size: 2rem; margin-bottom: 0.5rem;">✅</div>
+          <p style="color: #3b82f6; font-weight: 600;">Выбрано: ${files.length}</p>
+        `;
+      }
+    });
+
+    document.querySelector('form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('Спасибо за заказ! Мы свяжемся с вами.');
+      this.reset();
+    });
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) target.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+  </script>
+</body>
+</html>
