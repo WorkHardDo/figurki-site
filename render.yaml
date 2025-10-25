@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: web-service
+    env:
+      - PYTHONUNBUFFERED: 1
+    build:
+      dockerfile: Dockerfile
+    sourceCode: .
+    port: 8000
