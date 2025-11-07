@@ -1308,6 +1308,7 @@
                     <option value="couple">Парная</option>
                     <option value="wedding">Свадебная</option>
                     <option value="anime">Аниме стиль</option>
+                    <option value="anime">Уникальный стиль</option>
                 </select>
             </div>
             <div class="form-group">
@@ -1415,516 +1416,218 @@
     </div>
 
     <script>
-        // Mobile Menu Toggle
-        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-        const navLinks = document.getElementById('navLinks');
-        
-        mobileMenuToggle.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-            mobileMenuToggle.textContent = navLinks.classList.contains('active') ? '✕' : '☰';
-        });
+    // --- Mobile Menu Toggle ---
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const navLinks = document.getElementById('navLinks');
+    mobileMenuToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+        mobileMenuToggle.textContent = navLinks.classList.contains('active') ? '✕' : '☰';
+    });
 
-        // Carousel
-        let currentSlide = 0;
-        const slides = document.querySelectorAll('.carousel-item');
-        const totalSlides = slides.length;
+    // --- Carousel ---
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.carousel-item');
+    const totalSlides = slides.length;
+    function moveCarousel(direction) {
+        currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
+        const carouselInner = document.getElementById('carouselInner');
+        carouselInner.style.transform = `translateX(-${currentSlide * 100}%)`;
+    }
+    setInterval(() => moveCarousel(1), 5000);
 
-        function moveCarousel(direction) {
-            currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
-            const carouselInner = document.getElementById('carouselInner');
-            carouselInner.style.transform = `translateX(-${currentSlide * 100}%)`;
+    // --- File Upload Logic ---
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('fileInput');
+
+    uploadArea.addEventListener('click', () => fileInput.click());
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('dragover');
+    });
+    uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+        const files = e.dataTransfer.files;
+        if (files.length > 0) handleFile(files[0]);
+    });
+    fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) handleFile(e.target.files[0]);
+    });
+
+    function handleFile(file) {
+        if (file.type.startsWith('image/')) {
+            uploadArea.innerHTML = `
+                <div style="font-size: 3rem; margin-bottom: 1rem;">✓</div>
+                <h3>Фото загружено!</h3>
+                <p>${file.name}</p>
+            `;
+        } else {
+            showNotification('Ошибка', 'Пожалуйста, загрузите изображение', 'error');
+        }
+    }
+
+    // --- Реальная отправка формы на backend ---
+    document.getElementById("uploadForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const file = document.getElementById("fileInput").files[0];
+        const figurineType = document.getElementById("figurineType").value;
+        const size = document.getElementById("size").value;
+        const comments = document.getElementById("comments").value;
+
+        if (!file || !figurineType || !size) {
+            showNotification("Ошибка", "Пожалуйста, заполните все поля и прикрепите фото", "error");
+            return;
         }
 
-        // Auto carousel
-        setInterval(() => moveCarousel(1), 5000);
+        const formData = new FormData();
+        formData.append("photo", file);
+        formData.append("figurine_type", figurineType);
+        formData.append("size", size);
+        formData.append("comments", comments);
 
-        // File Upload
-        const uploadArea = document.getElementById('uploadArea');
-        const fileInput = document.getElementById('fileInput');
+        const submitText = document.getElementById('submitText');
+        const submitLoading = document.getElementById('submitLoading');
+        submitText.classList.add('hidden');
+        submitLoading.classList.remove('hidden');
 
-        uploadArea.addEventListener('click', () => fileInput.click());
-        
-        uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadArea.classList.add('dragover');
-        });
+        try {
+    const res = await fetch("/create_order", {
+        method: "POST",
+        body: formData
+    });
 
-        uploadArea.addEventListener('dragleave', () => {
-            uploadArea.classList.remove('dragover');
-        });
+    if (res.status === 401) {
+        // Пользователь не вошёл
+        window.location.href = "/dashboard.html";
+        return;
+    }
 
-        uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadArea.classList.remove('dragover');
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                handleFile(files[0]);
-            }
-        });
+    const data = await res.json();
+    showNotification(
+        data.status === "success" ? "Готово!" : "Ошибка",
+        data.message,
+        data.status === "success" ? "success" : "error"
+    );
 
-        fileInput.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                handleFile(e.target.files[0]);
-            }
-        });
+    if (data.status === "success") {
+        document.getElementById("uploadForm").reset();
+        uploadArea.innerHTML = `
+            <div style="font-size: 3rem; margin-bottom: 1rem;">📸</div>
+            <h3>Перетащите фото сюда или кликните для выбора</h3>
+            <p>Поддерживаемые форматы: JPG, PNG, HEIC</p>
+        `;
+    }
+} catch (err) {
+    console.error(err);
+    showNotification("Ошибка", "Не удалось отправить заказ", "error");
+} finally {
+    submitText.classList.remove('hidden');
+    submitLoading.classList.add('hidden');
+}
 
-        function handleFile(file) {
-            if (file.type.startsWith('image/')) {
-                uploadArea.innerHTML = `
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">✓</div>
-                    <h3>Фото загружено!</h3>
-                    <p>${file.name}</p>
-                `;
-                showNotification('Фото загружено', 'Ваше фото успешно загружено');
-            } else {
-                showNotification('Ошибка', 'Пожалуйста, загрузите изображение', 'error');
-            }
+    });
+
+    // --- Notifications ---
+    function showNotification(title, text, type = 'success') {
+        const notification = document.getElementById('notification');
+        const notificationTitle = document.getElementById('notificationTitle');
+        const notificationText = document.getElementById('notificationText');
+        const notificationIcon = notification.querySelector('.notification-icon');
+
+        notificationTitle.textContent = title;
+        notificationText.textContent = text;
+
+        if (type === 'error') {
+            notificationIcon.textContent = '✕';
+            notificationIcon.style.background = '#FF3B30';
+        } else {
+            notificationIcon.textContent = '✓';
+            notificationIcon.style.background = '#34C759';
         }
 
-        // Form Submission
-        document.getElementById('uploadForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const submitText = document.getElementById('submitText');
-            const submitLoading = document.getElementById('submitLoading');
-            
-            submitText.classList.add('hidden');
-            submitLoading.classList.remove('hidden');
-            
-            // Simulate form submission
+        notification.classList.add('active');
+        setTimeout(() => notification.classList.remove('active'), 3000);
+    }
+
+    // --- Chat Widget ---
+    function toggleChat() {
+        const chatWindow = document.getElementById('chatWindow');
+        chatWindow.classList.toggle('active');
+    }
+    function sendMessage() {
+        const chatInput = document.getElementById('chatInput');
+        const chatMessages = document.getElementById('chatMessages');
+        if (chatInput.value.trim()) {
+            const message = document.createElement('div');
+            message.style.marginBottom = '1rem';
+            message.innerHTML = `<strong>Вы:</strong> ${chatInput.value}`;
+            chatMessages.appendChild(message);
             setTimeout(() => {
-                submitText.classList.remove('hidden');
-                submitLoading.classList.add('hidden');
-                showNotification('Заказ оформлен!', 'Мы свяжемся с вами в ближайшее время');
-                document.getElementById('uploadForm').reset();
-                uploadArea.innerHTML = `
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">📸</div>
-                    <h3>Перетащите фото сюда или кликните для выбора</h3>
-                    <p>Поддерживаемые форматы: JPG, PNG, HEIC</p>
-                `;
-            }, 2000);
-        });
-
-        // Notification System
-        function showNotification(title, text, type = 'success') {
-            const notification = document.getElementById('notification');
-            const notificationTitle = document.getElementById('notificationTitle');
-            const notificationText = document.getElementById('notificationText');
-            const notificationIcon = notification.querySelector('.notification-icon');
-            
-            notificationTitle.textContent = title;
-            notificationText.textContent = text;
-            
-            if (type === 'error') {
-                notificationIcon.textContent = '✕';
-                notificationIcon.style.background = '#FF3B30';
-            } else {
-                notificationIcon.textContent = '✓';
-                notificationIcon.style.background = '#34C759';
-            }
-            
-            notification.classList.add('active');
-            
-            setTimeout(() => {
-                notification.classList.remove('active');
-            }, 3000);
-        }
-
-        // Chat Widget
-        function toggleChat() {
-            const chatWindow = document.getElementById('chatWindow');
-            chatWindow.classList.toggle('active');
-        }
-
-        function sendMessage() {
-            const chatInput = document.getElementById('chatInput');
-            const chatMessages = document.getElementById('chatMessages');
-            
-            if (chatInput.value.trim()) {
-                const message = document.createElement('div');
-                message.style.marginBottom = '1rem';
-                message.innerHTML = `<strong>Вы:</strong> ${chatInput.value}`;
-                chatMessages.appendChild(message);
-                
-                // Simulate response
-                setTimeout(() => {
-                    const response = document.createElement('div');
-                    response.style.marginBottom = '1rem';
-                    response.innerHTML = `<strong>Менеджер:</strong> Спасибо за ваш вопрос! Мы ответим в ближайшее время.`;
-                    chatMessages.appendChild(response);
-                    chatMessages.scrollTop = chatMessages.scrollHeight;
-                }, 1000);
-                
-                chatInput.value = '';
+                const response = document.createElement('div');
+                response.style.marginBottom = '1rem';
+                response.innerHTML = `<strong>Менеджер:</strong> Спасибо за ваш вопрос!`;
+                chatMessages.appendChild(response);
                 chatMessages.scrollTop = chatMessages.scrollHeight;
-            }
+            }, 1000);
+            chatInput.value = '';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
         }
+    }
+    document.getElementById('chatInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendMessage();
+    });
 
-        document.getElementById('chatInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
+    // --- Modal ---
+    function showModal(title, content) {
+        const modal = document.getElementById('modal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalBody = document.getElementById('modalBody');
+        modalTitle.textContent = title;
+        modalBody.innerHTML = content;
+        modal.classList.add('active');
+    }
+    function closeModal() {
+        document.getElementById('modal').classList.remove('active');
+    }
+    document.getElementById('modal').addEventListener('click', (e) => {
+        if (e.target.id === 'modal') closeModal();
+    });
+
+    // --- Scroll Effects ---
+    window.addEventListener('scroll', () => {
+        const header = document.querySelector('header');
+        if (window.scrollY > 50) {
+            header.style.background = 'rgba(255,255,255,0.9)';
+            header.style.boxShadow = '0 4px 20px rgba(0,0,0,0.05)';
+        } else {
+            header.style.background = 'rgba(255,255,255,0.7)';
+            header.style.boxShadow = 'none';
+        }
+    });
+
+    // --- Smooth Scrolling ---
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
+    });
 
-        // Modal
-        function showModal(title, content) {
-            const modal = document.getElementById('modal');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalBody = document.getElementById('modalBody');
-            
-            modalTitle.textContent = title;
-            modalBody.innerHTML = content;
-            modal.classList.add('active');
-        }
-
-        function closeModal() {
-            const modal = document.getElementById('modal');
-            modal.classList.remove('active');
-        }
-
-        // Page Navigation
-        function showPage(page) {
-            // This is a simplified version - in a real app, you'd have proper routing
-            const content = {
-                'individual': `
-                    <h3>Индивидуальная фигурка</h3>
-                    <p>Создайте уникальную фигурку себя или близкого человека.</p>
-                    <div class="price-card glass">
-                        <h4>Стандартная</h4>
-                        <div class="price"><span class="price-currency">₽</span>3,990</div>
-                        <ul style="text-align: left; margin: 1rem 0;">
-                            <li>Высота: 15 см</li>
-                            <li>Детализация лица</li>
-                            <li>Базовая одежда</li>
-                            <li>3-5 дней на изготовление</li>
-                        </ul>
-                        <button class="btn-primary" style="width: 100%;">Заказать</button>
-                    </div>
-                `,
-                'family': `
-                    <h3>Семейная фигурка</h3>
-                    <p>Запечатлите всю семью в одной фигурке.</p>
-                    <div class="gallery">
-                        <div class="gallery-item">
-                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'%3E%3Crect width='300' height='300' fill='%23FFE5B4'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23333' font-size='20'%3EСемья 1%3C/text%3E%3C/svg%3E" alt="Семья 1">
-                        </div>
-                        <div class="gallery-item">
-                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'%3E%3Crect width='300' height='300' fill='%23B4E5FF'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23333' font-size='20'%3EСемья 2%3C/text%3E%3C/svg%3E" alt="Семья 2">
-                        </div>
-                    </div>
-                `,
-                'couples': `
-                    <h3>Парные фигурки</h3>
-                    <p>Идеальный подарок для влюбленных пар.</p>
-                    <div class="style-selector">
-                        <div class="style-option">
-                            <div class="style-icon">💕</div>
-                            <div class="style-name">Романтичные</div>
-                            <div class="style-price">от 6,990₽</div>
-                        </div>
-                        <div class="style-option">
-                            <div class="style-icon">🎭</div>
-                            <div class="style-name">Веселые</div>
-                            <div class="style-price">от 6,990₽</div>
-                        </div>
-                    </div>
-                `,
-                'wedding': `
-                    <h3>Свадебные фигурки</h3>
-                    <p>Особенный способ сохранить воспоминания о свадьбе.</p>
-                    <div class="glass" style="padding: 2rem; margin: 2rem 0;">
-                        <h4>Варианты оформления:</h4>
-                        <ul style="margin: 1rem 0;">
-                            <li>Традиционные наряды</li>
-                            <li>Индивидуальные аксессуары</li>
-                            <li>Персонализированная подставка</li>
-                            <li>Специальная упаковка</li>
-                        </ul>
-                    </div>
-                `,
-                'anime': `
-                    <h3>Аниме стиль</h3>
-                    <p>Станьте героем любимого аниме!</p>
-                    <div class="style-selector">
-                        <div class="style-option">
-                            <div class="style-icon">🎌</div>
-                            <div class="style-name">Классическое аниме</div>
-                            <div class="style-price">от 4,990₽</div>
-                        </div>
-                        <div class="style-option">
-                            <div class="style-icon">😊</div>
-                            <div class="style-name">Чиби</div>
-                            <div class="style-price">от 4,990₽</div>
-                        </div>
-                    </div>
-                `,
-                'styles': `
-                    <h3>Выберите стиль</h3>
-                    <p>Различные художественные стили для вашей фигурки.</p>
-                    <div class="gallery">
-                        <div class="gallery-item">
-                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'%3E%3Crect width='300' height='300' fill='%23FFD700'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23333' font-size='20'%3EРеалистичный%3C/text%3E%3C/svg%3E" alt="Реалистичный">
-                        </div>
-                        <div class="gallery-item">
-                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'%3E%3Crect width='300' height='300' fill='%23FF6B6B'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='20'%3EКарикатура%3C/text%3E%3C/svg%3E" alt="Карикатура">
-                        </div>
-                        <div class="gallery-item">
-                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'%3E%3Crect width='300' height='300' fill='%239B59B6'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='20'%3EФэнтези%3C/text%3E%3C/svg%3E" alt="Фэнтези">
-                        </div>
-                    </div>
-                `
-            };
-            
-            showModal(page === 'styles' ? 'Стили фигурок' : content[page] ? Object.values(content)[Object.keys(content).indexOf(page)].split('</h3>')[0] + '</h3>' : 'Информация', 
-                    content[page] || '<p>Информация скоро появится...</p>');
-        }
-
-        // FAQ Toggle
-        document.addEventListener('click', (e) => {
-            if (e.target.closest('.faq-question')) {
-                const faqItem = e.target.closest('.faq-item');
-                faqItem.classList.toggle('active');
-            }
-        });
-
-        // Style Selector
-        document.addEventListener('click', (e) => {
-            if (e.target.closest('.style-option')) {
-                document.querySelectorAll('.style-option').forEach(option => {
-                    option.classList.remove('selected');
-                });
-                e.target.closest('.style-option').classList.add('selected');
-            }
-        });
-
-        // Smooth Scrolling
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
+    // --- Animations при появлении ---
+    document.addEventListener('DOMContentLoaded', () => {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('animate-in');
             });
         });
-
-        // Header Scroll Effect
-        window.addEventListener('scroll', () => {
-            const header = document.querySelector('header');
-            if (window.scrollY > 50) {
-                header.style.background = 'rgba(255, 255, 255, 0.9)';
-                header.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.05)';
-            } else {
-                header.style.background = 'rgba(255, 255, 255, 0.7)';
-                header.style.boxShadow = 'none';
-            }
-        });
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            // Add entrance animations
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('animate-in');
-                    }
-                });
-            });
-
-            document.querySelectorAll('.glass, .category-card, .review-card').forEach(el => {
-                observer.observe(el);
-            });
-
-            // Show welcome notification
-            setTimeout(() => {
-                showNotification('Добро пожаловать!', 'Создайте свою первую фигурку прямо сейчас');
-            }, 2000);
-        });
-
-        // Close modal on outside click
-        document.getElementById('modal').addEventListener('click', (e) => {
-            if (e.target.id === 'modal') {
-                closeModal();
-            }
-        });
-
-        // Add loading states to buttons
-        document.querySelectorAll('.btn-primary').forEach(button => {
-            button.addEventListener('click', function(e) {
-                if (!this.classList.contains('no-loading')) {
-                    const originalText = this.innerHTML;
-                    this.innerHTML = '<span class="loading"></span>';
-                    this.disabled = true;
-                    
-                    setTimeout(() => {
-                        this.innerHTML = originalText;
-                        this.disabled = false;
-                    }, 1500);
-                }
-            });
-        });
-    </script>
-
-    <!-- Python Backend Integration (Flask Example) -->
-    <script>
-        // Example of how to integrate with Python backend
-        /*
-        // Submit order to backend
-        async function submitOrder(formData) {
-            try {
-                const response = await fetch('/api/orders', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(formData)
-                });
-                
-                const result = await response.json();
-                
-                if (response.ok) {
-                    showNotification('Заказ оформлен!', `Номер заказа: ${result.orderId}`);
-                    return result;
-                } else {
-                    throw new Error(result.message);
-                }
-            } catch (error) {
-                showNotification('Ошибка', error.message, 'error');
-            }
-        }
-        
-        // Upload file to backend
-        async function uploadFile(file) {
-            const formData = new FormData();
-            formData.append('file', file);
-            
-            try {
-                const response = await fetch('/api/upload', {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                const result = await response.json();
-                return result.fileUrl;
-            } catch (error) {
-                showNotification('Ошибка загрузки', error.message, 'error');
-            }
-        }
-        
-        // Get user orders
-        async function getUserOrders() {
-            try {
-                const response = await fetch('/api/orders/my', {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    }
-                });
-                
-                const orders = await response.json();
-                return orders;
-            } catch (error) {
-                showNotification('Ошибка', 'Не удалось загрузить заказы', 'error');
-            }
-        }
-        */
-    </script>
-
-    <!-- Python Backend Code (Flask Example) -->
-    <!--
-    from flask import Flask, request, jsonify
-    from werkzeug.utils import secure_filename
-    import os
-    import uuid
-    from datetime import datetime
-
-    app = Flask(__name__)
-    app.config['UPLOAD_FOLDER'] = 'uploads'
-    app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
-
-    # Ensure upload directory exists
-    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-
-    # Allowed file extensions
-    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'heic', 'heif'}
-
-    def allowed_file(filename):
-        return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-    @app.route('/api/upload', methods=['POST'])
-    def upload_file():
-        if 'file' not in request.files:
-            return jsonify({'error': 'No file provided'}), 400
-        
-        file = request.files['file']
-        if file.filename == '':
-            return jsonify({'error': 'No file selected'}), 400
-        
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            unique_filename = f"{uuid.uuid4()}_{filename}"
-            filepath = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
-            file.save(filepath)
-            
-            return jsonify({
-                'fileUrl': f"/uploads/{unique_filename}",
-                'filename': unique_filename
-            })
-        
-        return jsonify({'error': 'Invalid file type'}), 400
-
-    @app.route('/api/orders', methods=['POST'])
-    def create_order():
-        data = request.json
-        
-        # Validate required fields
-        required_fields = ['figurineType', 'size', 'fileUrl']
-        for field in required_fields:
-            if field not in data:
-                return jsonify({'error': f'Missing required field: {field}'}), 400
-        
-        # Create order
-        order = {
-            'orderId': str(uuid.uuid4()),
-            'figurineType': data['figurineType'],
-            'size': data['size'],
-            'fileUrl': data['fileUrl'],
-            'comments': data.get('comments', ''),
-            'status': 'pending',
-            'createdAt': datetime.utcnow().isoformat(),
-            'price': calculate_price(data['figurineType'], data['size'])
-        }
-        
-        # Save to database (simplified)
-        # In real app, use proper database
-        orders.append(order)
-        
-        return jsonify(order), 201
-
-    def calculate_price(figurine_type, size):
-        base_prices = {
-            'individual': {'small': 3990, 'medium': 5990, 'large': 7990},
-            'family': {'small': 7990, 'medium': 11990, 'large': 15990},
-            'couple': {'small': 6990, 'medium': 9990, 'large': 12990},
-            'wedding': {'small': 7990, 'medium': 11990, 'large': 15990},
-            'anime': {'small': 4990, 'medium': 7990, 'large': 10990}
-        }
-        
-        return base_prices.get(figurine_type, {}).get(size, 5990)
-
-    # Sample data storage (replace with database)
-    orders = []
-
-    @app.route('/api/orders/my', methods=['GET'])
-    def get_my_orders():
-        # In real app, get user ID from auth token
-        user_orders = [order for order in orders]
-        return jsonify(user_orders)
-
-    if __name__ == '__main__':
-        app.run(debug=True)
-    -->
+        document.querySelectorAll('.glass, .category-card, .review-card').forEach(el => observer.observe(el));
+        setTimeout(() => {
+            showNotification('Добро пожаловать!', 'Создайте свою первую фигурку прямо сейчас');
+        }, 2000);
+    });
+</script>
 </body>
 </html>

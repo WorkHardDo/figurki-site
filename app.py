@@ -1,10 +1,11 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from dotenv import load_dotenv
+from datetime import datetime
 
 load_dotenv()
 
@@ -15,14 +16,16 @@ app.secret_key = os.getenv('SECRET_KEY', 'dev_secret')
 # --- Пути и база ---
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+
+# Единая база для пользователей и заказов
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
 # --- Flask-Login ---
 login_manager = LoginManager(app)
-login_manager.login_view = 'login'
+login_manager.login_view = 'dashboard'
 
 # --- Модели ---
 class User(db.Model, UserMixin):
@@ -32,11 +35,16 @@ class User(db.Model, UserMixin):
 
 class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    type = db.Column(db.String(50))
-    photo_path = db.Column(db.String(255))
-    status = db.Column(db.String(50), default='pending')
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    photo_filename = db.Column(db.String(255), nullable=False)
+    figurine_type = db.Column(db.String(50), nullable=False)
+    size = db.Column(db.String(50), nullable=False)
+    comments = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+    user = db.relationship('User', backref=db.backref('orders', lazy=True))
+
+# Создание всех таблиц при старте приложения
 with app.app_context():
     db.create_all()
 
@@ -73,7 +81,7 @@ def anime():
 def styles():
     return render_template('styles.html')
 
-# --- Аутентификация (вход и регистрация на одной странице) ---
+# --- Аутентификация ---
 @app.route('/dashboard', methods=['GET', 'POST'])
 def dashboard():
     if current_user.is_authenticated:
@@ -110,34 +118,42 @@ def logout():
     flash("Вы вышли из аккаунта", "info")
     return redirect(url_for('index'))
 
-# --- Кабинет ---
+# --- Кабинет пользователя ---
 @app.route('/cabinet')
 @login_required
 def cabinet():
     orders = Order.query.filter_by(user_id=current_user.id).all()
     return render_template('cabinet.html', user=current_user, orders=orders)
 
-# --- Загрузка файлов ---
-@app.route('/upload', methods=['POST'])
-@login_required
-def upload_file():
-    file = request.files.get('file')
-    order_type = request.form.get('order_type', 'single')
+# --- Создание заказа ---
+@app.route('/create_order', methods=['POST'])
+def create_order():
+    if not current_user.is_authenticated:
+        return redirect(url_for('dashboard'))
 
-    if not file:
-        flash("Файл не выбран", "warning")
-        return redirect(request.url)
+    file = request.files.get('photo')
+    figurine_type = request.form.get('figurine_type')
+    size = request.form.get('size')
+    comments = request.form.get('comments')
+
+    if not file or not figurine_type or not size:
+        return jsonify({'status': 'error', 'message': 'Заполните все поля и прикрепите фото'}), 400
 
     filename = secure_filename(file.filename)
-    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-    file.save(file_path)
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    file.save(filepath)
 
-    new_order = Order(user_id=current_user.id, type=order_type, photo_path=file_path, status='pending')
+    new_order = Order(
+        user_id=current_user.id,
+        photo_filename=filename,
+        figurine_type=figurine_type,
+        size=size,
+        comments=comments
+    )
     db.session.add(new_order)
     db.session.commit()
 
-    flash("Файл успешно загружен!", "success")
-    return redirect(url_for('cabinet'))
+    return jsonify({'status': 'success', 'message': 'Заказ успешно создан!'})
 
 if __name__ == '__main__':
     app.run(debug=True)
