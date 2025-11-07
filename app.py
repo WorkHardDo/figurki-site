@@ -1,34 +1,50 @@
-from flask import Flask, render_template, request, redirect, url_for, session
-from werkzeug.utils import secure_filename
-import sqlite3
 import os
+from flask import Flask, render_template, request, redirect, url_for, flash
+from werkzeug.utils import secure_filename
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from dotenv import load_dotenv
 
 load_dotenv()
 
-app = Flask(__name__)
-app.secret_key = os.getenv('SECRET_KEY')
-UPLOAD_FOLDER = 'static/uploads'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+# --- Настройки приложения ---
+app = Flask(__name__, instance_relative_config=True)
+app.secret_key = os.getenv('SECRET_KEY', 'dev_secret')
 
-# Инициализация базы данных
-def init_db():
-    conn = sqlite3.connect('orders.db')
-    c = conn.cursor()
-    c.execute('''CREATE TABLE IF NOT EXISTS users
-                 (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT UNIQUE, password TEXT)''')
-    c.execute('''CREATE TABLE IF NOT EXISTS orders
-                 (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER, type TEXT, photo_path TEXT, status TEXT)''')
-    conn.commit()
-    conn.close()
+# --- Пути и база ---
+app.config['UPLOAD_FOLDER'] = 'static/uploads'
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-init_db()
+db = SQLAlchemy(app)
 
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+# --- Flask-Login ---
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'
 
-# Маршруты для страниц
+# --- Модели ---
+class User(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(150), unique=True, nullable=False)
+    password_hash = db.Column(db.String(200), nullable=False)
+
+class Order(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    type = db.Column(db.String(50))
+    photo_path = db.Column(db.String(255))
+    status = db.Column(db.String(50), default='pending')
+
+with app.app_context():
+    db.create_all()
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+# --- Основные страницы ---
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -57,72 +73,71 @@ def anime():
 def styles():
     return render_template('styles.html')
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-        conn = sqlite3.connect('orders.db')
-        c = conn.cursor()
-        c.execute("SELECT * FROM users WHERE email = ? AND password = ?", (email, password))
-        user = c.fetchone()
-        conn.close()
-        if user:
-            session['user_id'] = user[0]
-            return redirect(url_for('dashboard'))
-        return render_template('login.html', error="Неверные данные")
-    return render_template('login.html')
-
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-        conn = sqlite3.connect('orders.db')
-        c = conn.cursor()
-        try:
-            c.execute("INSERT INTO users (email, password) VALUES (?, ?)", (email, password))
-            conn.commit()
-            return redirect(url_for('login'))
-        except sqlite3.IntegrityError:
-            conn.close()
-            return render_template('register.html', error="Email уже зарегистрирован")
-        finally:
-            conn.close()
-    return render_template('register.html')
-
-@app.route('/dashboard')
+# --- Аутентификация (вход и регистрация на одной странице) ---
+@app.route('/dashboard', methods=['GET', 'POST'])
 def dashboard():
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
-    conn = sqlite3.connect('orders.db')
-    c = conn.cursor()
-    c.execute("SELECT * FROM orders WHERE user_id = ?", (session['user_id'],))
-    orders = c.fetchall()
-    conn.close()
-    return render_template('dashboard.html', orders=orders)
+    if current_user.is_authenticated:
+        return redirect(url_for('cabinet'))
 
+    if request.method == 'POST':
+        action = request.form.get('action')  # "login" или "register"
+        email = request.form.get('email')
+        password = request.form.get('password')
+
+        if action == 'login':
+            user = User.query.filter_by(email=email).first()
+            if user and check_password_hash(user.password_hash, password):
+                login_user(user)
+                return redirect(url_for('cabinet'))
+            flash("Неверный email или пароль", "danger")
+
+        elif action == 'register':
+            if User.query.filter_by(email=email).first():
+                flash("Email уже зарегистрирован", "warning")
+            else:
+                hashed = generate_password_hash(password)
+                new_user = User(email=email, password_hash=hashed)
+                db.session.add(new_user)
+                db.session.commit()
+                flash("Регистрация успешна! Теперь войдите в систему.", "success")
+
+    return render_template('dashboard.html')
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash("Вы вышли из аккаунта", "info")
+    return redirect(url_for('index'))
+
+# --- Кабинет ---
+@app.route('/cabinet')
+@login_required
+def cabinet():
+    orders = Order.query.filter_by(user_id=current_user.id).all()
+    return render_template('cabinet.html', user=current_user, orders=orders)
+
+# --- Загрузка файлов ---
 @app.route('/upload', methods=['POST'])
+@login_required
 def upload_file():
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
-    if 'file' not in request.files:
-        return redirect(request.url)
-    file = request.files['file']
+    file = request.files.get('file')
     order_type = request.form.get('order_type', 'single')
-    if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(file_path)
-        conn = sqlite3.connect('orders.db')
-        c = conn.cursor()
-        c.execute("INSERT INTO orders (user_id, type, photo_path, status) VALUES (?, ?, ?, ?)",
-                  (session['user_id'], order_type, file_path, 'pending'))
-        conn.commit()
-        conn.close()
-        return redirect(url_for('dashboard'))
-    return redirect(request.url)
+
+    if not file:
+        flash("Файл не выбран", "warning")
+        return redirect(request.url)
+
+    filename = secure_filename(file.filename)
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    file.save(file_path)
+
+    new_order = Order(user_id=current_user.id, type=order_type, photo_path=file_path, status='pending')
+    db.session.add(new_order)
+    db.session.commit()
+
+    flash("Файл успешно загружен!", "success")
+    return redirect(url_for('cabinet'))
 
 if __name__ == '__main__':
-    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
     app.run(debug=True)

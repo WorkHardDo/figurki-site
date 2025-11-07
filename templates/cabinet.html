@@ -366,8 +366,8 @@
     <div class="header">
       <h1>👤 Личный кабинет</h1>
       <div class="header-buttons">
-        <a href="/" class="btn btn-secondary">На главную</a>
-        <button class="btn btn-primary" onclick="handleLogout()">Выйти</button>
+        <a href="{{ url_for('index') }}" class="btn btn-secondary">На главную</a>
+        <a href="{{ url_for('logout') }}" class="btn btn-primary">Выйти</a>
       </div>
     </div>
 

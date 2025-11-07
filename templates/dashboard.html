@@ -253,15 +253,17 @@
 
       <!-- Форма входа -->
       <div id="login" class="tab-content active">
-        <form onsubmit="handleLogin(event)">
+        <form action="{{ url_for('dashboard') }}" method="POST">
+          <input type="hidden" name="action" value="login">
+
           <div class="form-group">
             <label for="login-email">Email</label>
-            <input type="email" id="login-email" required placeholder="example@mail.com">
+            <input type="email" id="login-email" name="email" required placeholder="example@mail.com">
           </div>
 
           <div class="form-group">
             <label for="login-password">Пароль</label>
-            <input type="password" id="login-password" required placeholder="••••••••">
+            <input type="password" id="login-password" name="password" required placeholder="••••••••">
           </div>
 
           <div class="checkbox-group">
@@ -270,78 +272,40 @@
           </div>
 
           <button type="submit" class="submit-btn">Войти</button>
-
-          <div class="divider"><span>или</span></div>
-
-          <div class="social-buttons">
-            <button type="button" class="social-btn" onclick="handleGoogleAuth()">
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
-                <path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z" fill="#34A853"/>
-                <path d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707 0-.593.102-1.167.282-1.707V4.961H.957C.347 6.175 0 7.55 0 9s.348 2.825.957 4.039l3.007-2.332z" fill="#FBBC05"/>
-                <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.961L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
-              </svg>
-              Google
-            </button>
-            <button type="button" class="social-btn" onclick="handleVKAuth()">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="#0077FF">
-                <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 13.452c.659.637 1.354 1.238 1.957 1.916.268.302.522.613.73.973.291.502.027 1.055-.24 1.086l-3.15.001c-.736.061-1.324-.238-1.814-.736-.394-.4-.76-.822-1.14-1.233-.161-.175-.329-.341-.525-.477-.37-.257-.692-.188-.904.19-.216.382-.265.805-.287 1.229-.033.688-.26.869-.95.901-1.472.069-2.87-.154-4.157-.95-1.142-.707-2.026-1.679-2.796-2.788-1.503-2.16-2.655-4.524-3.696-6.938-.224-.52-.063-.798.495-.807.931-.015 1.862-.013 2.794-.002.377.006.631.228.777.577.501 1.199 1.096 2.34 1.841 3.397.199.283.404.565.68.774.304.23.536.163.682-.181.096-.225.145-.467.172-.708.087-.77.098-1.541-.017-2.308-.082-.549-.385-.904-.934-.999-.28-.048-.239-.142-.103-.285.204-.214.396-.348.78-.348h2.876c.453.089.554.292.616.747l.002 3.188c-.005.188.094.747.432.87.271.092.45-.125.612-.306.73-.817 1.251-1.783 1.72-2.781.206-.44.381-.895.546-1.35.123-.337.316-.505.695-.497l3.399.004c.1 0 .201.002.299.022.462.094.589.328.446.782-.229.728-.659 1.34-1.089 1.952-.459.654-.948 1.287-1.406 1.942-.425.607-.391 1.11.128 1.614z"/>
-              </svg>
-              VK
-            </button>
-          </div>
         </form>
       </div>
 
       <!-- Форма регистрации -->
       <div id="register" class="tab-content">
-        <form onsubmit="handleRegister(event)">
+        <form action="{{ url_for('dashboard') }}" method="POST">
+          <input type="hidden" name="action" value="register">
+
           <div class="form-group">
             <label for="register-name">Полное имя</label>
-            <input type="text" id="register-name" required placeholder="Иван Иванов">
+            <input type="text" id="register-name" name="username" required placeholder="Иван Иванов">
           </div>
 
           <div class="form-group">
             <label for="register-email">Email</label>
-            <input type="email" id="register-email" required placeholder="example@mail.com">
+            <input type="email" id="register-email" name="email" required placeholder="example@mail.com">
           </div>
 
           <div class="form-group">
             <label for="register-phone">Телефон</label>
-            <input type="tel" id="register-phone" required placeholder="+7 (999) 123-45-67">
+            <input type="tel" id="register-phone" name="phone" placeholder="+7 (999) 123-45-67">
           </div>
 
           <div class="form-group">
             <label for="register-password">Пароль</label>
-            <input type="password" id="register-password" required placeholder="••••••••">
+            <input type="password" id="register-password" name="password" required placeholder="••••••••">
           </div>
 
           <div class="form-group">
             <label for="register-password-confirm">Подтвердите пароль</label>
-            <input type="password" id="register-password-confirm" required placeholder="••••••••">
+            <input type="password" id="register-password-confirm" name="confirm_password" required placeholder="••••••••">
           </div>
 
           <button type="submit" class="submit-btn">Зарегистрироваться</button>
-
-          <div class="divider"><span>или</span></div>
-
-          <div class="social-buttons">
-            <button type="button" class="social-btn" onclick="handleGoogleAuth()">
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
-                <path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z" fill="#34A853"/>
-                <path d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707 0-.593.102-1.167.282-1.707V4.961H.957C.347 6.175 0 7.55 0 9s.348 2.825.957 4.039l3.007-2.332z" fill="#FBBC05"/>
-                <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.961L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
-              </svg>
-              Google
-            </button>
-            <button type="button" class="social-btn" onclick="handleVKAuth()">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="#0077FF">
-                <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 13.452c.659.637 1.354 1.238 1.957 1.916.268.302.522.613.73.973.291.502.027 1.055-.24 1.086l-3.15.001c-.736.061-1.324-.238-1.814-.736-.394-.4-.76-.822-1.14-1.233-.161-.175-.329-.341-.525-.477-.37-.257-.692-.188-.904.19-.216.382-.265.805-.287 1.229-.033.688-.26.869-.95.901-1.472.069-2.87-.154-4.157-.95-1.142-.707-2.026-1.679-2.796-2.788-1.503-2.16-2.655-4.524-3.696-6.938-.224-.52-.063-.798.495-.807.931-.015 1.862-.013 2.794-.002.377.006.631.228.777.577.501 1.199 1.096 2.34 1.841 3.397.199.283.404.565.68.774.304.23.536.163.682-.181.096-.225.145-.467.172-.708.087-.77.098-1.541-.017-2.308-.082-.549-.385-.904-.934-.999-.28-.048-.239-.142-.103-.285.204-.214.396-.348.78-.348h2.876c.453.089.554.292.616.747l.002 3.188c-.005.188.094.747.432.87.271.092.45-.125.612-.306.73-.817 1.251-1.783 1.72-2.781.206-.44.381-.895.546-1.35.123-.337.316-.505.695-.497l3.399.004c.1 0 .201.002.299.022.462.094.589.328.446.782-.229.728-.659 1.34-1.089 1.952-.459.654-.948 1.287-1.406 1.942-.425.607-.391 1.11.128 1.614z"/>
-              </svg>
-              VK
-            </button>
-          </div>
         </form>
       </div>
     </div>
@@ -353,60 +317,21 @@
 
   <script>
     function switchTab(tab) {
-      // Переключение вкладок
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
       document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-      
       document.querySelector(`button[onclick="switchTab('${tab}')"]`).classList.add('active');
       document.getElementById(tab).classList.add('active');
     }
 
-    function handleLogin(event) {
-      event.preventDefault();
-      const email = document.getElementById('login-email').value;
-      const password = document.getElementById('login-password').value;
-      const rememberMe = document.getElementById('remember-me').checked;
-
-      // Здесь будет логика отправки на сервер Python
-      console.log('Login:', { email, password, rememberMe });
-      
-      // Временное перенаправление
-      alert('Вход выполнен! Перенаправление в личный кабинет...');
-      window.location.href = '/dashboard.html';
-    }
-
-    function handleRegister(event) {
-      event.preventDefault();
-      const name = document.getElementById('register-name').value;
-      const email = document.getElementById('register-email').value;
-      const phone = document.getElementById('register-phone').value;
-      const password = document.getElementById('register-password').value;
-      const passwordConfirm = document.getElementById('register-password-confirm').value;
-
-      if (password !== passwordConfirm) {
+    const registerForm = document.querySelector('#register form');
+    registerForm.addEventListener('submit', (e) => {
+      const pass = document.getElementById('register-password').value;
+      const confirm = document.getElementById('register-password-confirm').value;
+      if (pass !== confirm) {
+        e.preventDefault();
         alert('Пароли не совпадают!');
-        return;
       }
-
-      // Здесь будет логика отправки на сервер Python
-      console.log('Register:', { name, email, phone, password });
-      
-      // Временное перенаправление
-      alert('Регистрация успешна! Перенаправление на вход...');
-      switchTab('login');
-    }
-
-    function handleGoogleAuth() {
-      // Здесь будет логика OAuth Google
-      console.log('Google auth');
-      alert('Google авторизация в разработке');
-    }
-
-    function handleVKAuth() {
-      // Здесь будет логика OAuth VK
-      console.log('VK auth');
-      alert('VK авторизация в разработке');
-    }
+    });
   </script>
 </body>
 </html>

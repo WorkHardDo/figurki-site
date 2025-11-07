@@ -1,0 +1,22 @@
+<header>
+    <nav>
+        <a href="{{ url_for('index') }}" class="logo">FigurineMe</a>
+        <div class="nav-links" id="navLinks">
+            <a href="{{ url_for('index') }}" class="{% if request.endpoint == 'index' %}active{% endif %}">Главная</a>
+            <a href="{{ url_for('single') }}">Индивидуальные</a>
+            <a href="{{ url_for('family') }}">Семейные</a>
+            <a href="{{ url_for('couple') }}">Парные</a>
+            <a href="{{ url_for('wedding') }}">Свадебные</a>
+            <a href="{{ url_for('anime') }}">Аниме</a>
+            <a href="{{ url_for('styles') }}">Стили</a>
+
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('cabinet') }}" class="btn-primary">Личный кабинет</a>
+                <a href="{{ url_for('logout') }}" class="btn-secondary">Выйти</a>
+            {% else %}
+                <a href="{{ url_for('dashboard') }}" class="btn-primary">Войти</a>
+            {% endif %}
+        </div>
+        <button class="mobile-menu-toggle" id="mobileMenuToggle">☰</button>
+    </nav>
+</header>
