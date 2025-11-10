@@ -41,6 +41,7 @@ class Order(db.Model):
     size = db.Column(db.String(50), nullable=False)
     comments = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    status = db.Column(db.String(50), default='ожидает оплаты')
 
     user = db.relationship('User', backref=db.backref('orders', lazy=True))
 
@@ -123,7 +124,23 @@ def logout():
 @login_required
 def cabinet():
     orders = Order.query.filter_by(user_id=current_user.id).all()
+    # Добавим определение цены прямо здесь
+    def get_price(size):
+        if size == "small":
+            return 3990
+        elif size == "medium":
+            return 5990
+        elif size == "large":
+            return 7990
+        return 0
+
+    for o in orders:
+        o.price = get_price(o.size)
+        if not hasattr(o, "status") or not o.status:
+            o.status = "ожидает оплаты"
+
     return render_template('cabinet.html', user=current_user, orders=orders)
+
 
 # --- Создание заказа ---
 @app.route('/create_order', methods=['POST'])
@@ -154,6 +171,20 @@ def create_order():
     db.session.commit()
 
     return jsonify({'status': 'success', 'message': 'Заказ успешно создан!'})
+
+@app.route('/update_status/<int:order_id>', methods=['POST'])
+@login_required
+def update_status(order_id):
+    order = Order.query.filter_by(id=order_id, user_id=current_user.id).first()
+    if not order:
+        return jsonify({'status': 'error', 'message': 'Заказ не найден'}), 404
+
+    if order.status == 'ожидает оплаты':
+        order.status = 'в процессе'
+        db.session.commit()
+        return jsonify({'status': 'success', 'message': 'Статус обновлён: в процессе'})
+    else:
+        return jsonify({'status': 'error', 'message': 'Нельзя изменить этот заказ'}), 400
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -20,3 +20,4 @@ class Order(db.Model):
     size = db.Column(db.String(50))
     comments = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    status = db.Column(db.String(50), default='ожидает оплаты')

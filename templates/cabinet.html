@@ -393,98 +393,54 @@
 
     <!-- Вкладка "Мои заказы" -->
     <div id="orders" class="tab-content active">
-      <div class="orders-grid">
-        <div class="order-card">
-          <img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=400&h=300&fit=crop" alt="Заказ" class="order-image">
-          <div class="order-content">
-            <div class="order-header">
-              <h3 class="order-title">Индивидуальная фигурка</h3>
-              <span class="order-status status-in-progress">В процессе</span>
-            </div>
-            <div class="order-category">📦 Категория: Индивидуальные</div>
-            <div class="order-info">
-              <span class="order-date">15 октября 2025</span>
-              <span class="order-price">15 000 ₽</span>
-            </div>
-          </div>
+  {% if orders %}
+  <div class="orders-grid">
+    {% for order in orders %}
+    <div class="order-card">
+      <img src="{{ url_for('static', filename='uploads/' + order.photo_filename) }}"
+           alt="Заказ {{ order.id }}" class="order-image">
+      <div class="order-content">
+        <div class="order-header">
+          <h3 class="order-title">{{ order.comments or 'Без комментария' }}</h3>
+          {% if order.status == 'в процессе' %}
+            <span class="order-status status-in-progress">В процессе</span>
+          {% elif order.status == 'готово' %}
+            <span class="order-status status-completed">Готово</span>
+          {% else %}
+            <span class="order-status status-pending">Ожидает оплаты</span>
+          {% endif %}
         </div>
 
-        <div class="order-card">
-          <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=400&h=300&fit=crop" alt="Заказ" class="order-image">
-          <div class="order-content">
-            <div class="order-header">
-              <h3 class="order-title">Семейная фигурка (4 персоны)</h3>
-              <span class="order-status status-in-progress">В процессе</span>
-            </div>
-            <div class="order-category">👨‍👩‍👧‍👦 Категория: Семейные</div>
-            <div class="order-info">
-              <span class="order-date">10 октября 2025</span>
-              <span class="order-price">45 000 ₽</span>
-            </div>
-          </div>
+        <div class="order-category">
+          📦 Тип: 
+          {% if order.figurine_type == 'individual' %}Индивидуальная{% 
+          elif order.figurine_type == 'family' %}Семейная{% 
+          elif order.figurine_type == 'couple' %}Парная{% 
+          elif order.figurine_type == 'wedding' %}Свадебная{% 
+          elif order.figurine_type == 'anime' %}Аниме стиль{% 
+          else %}Уникальный стиль{% endif %}
         </div>
 
-        <div class="order-card">
-          <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=300&fit=crop" alt="Заказ" class="order-image">
-          <div class="order-content">
-            <div class="order-header">
-              <h3 class="order-title">Свадебная фигурка</h3>
-              <span class="order-status status-completed">Доставлено</span>
-            </div>
-            <div class="order-category">💒 Категория: Свадебные</div>
-            <div class="order-info">
-              <span class="order-date">1 октября 2025</span>
-              <span class="order-price">35 000 ₽</span>
-            </div>
-          </div>
+        <div class="order-info">
+          <span class="order-date">{{ order.created_at.strftime('%d.%m.%Y') }}</span>
+          <span class="order-price">{{ order.price }} ₽</span>
         </div>
 
-        <div class="order-card">
-          <img src="https://images.unsplash.com/photo-1578632292335-df3abbb0d586?w=400&h=300&fit=crop" alt="Заказ" class="order-image">
-          <div class="order-content">
-            <div class="order-header">
-              <h3 class="order-title">Фигурка пары</h3>
-              <span class="order-status status-completed">Доставлено</span>
-            </div>
-            <div class="order-category">💑 Категория: Парные</div>
-            <div class="order-info">
-              <span class="order-date">20 сентября 2025</span>
-              <span class="order-price">25 000 ₽</span>
-            </div>
-          </div>
-        </div>
+        {% if order.status == 'ожидает оплаты' %}
+<button class="btn btn-primary pay-btn" data-id="{{ order.id }}" style="margin-top: 10px; width: 100%;">
+  Оплатить
+</button>
+{% endif %}
 
-        <div class="order-card">
-          <img src="https://images.unsplash.com/photo-1613376023733-0a73315d9b06?w=400&h=300&fit=crop" alt="Заказ" class="order-image">
-          <div class="order-content">
-            <div class="order-header">
-              <h3 class="order-title">Аниме-персонаж</h3>
-              <span class="order-status status-pending">Ожидает оплаты</span>
-            </div>
-            <div class="order-category">🎭 Категория: Аниме</div>
-            <div class="order-info">
-              <span class="order-date">17 октября 2025</span>
-              <span class="order-price">18 000 ₽</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="order-card">
-          <img src="https://images.unsplash.com/photo-1560114928-40f1f1eb26a0?w=400&h=300&fit=crop" alt="Заказ" class="order-image">
-          <div class="order-content">
-            <div class="order-header">
-              <h3 class="order-title">Корпоративная фигурка</h3>
-              <span class="order-status status-completed">Доставлено</span>
-            </div>
-            <div class="order-category">💼 Категория: Корпоративные</div>
-            <div class="order-info">
-              <span class="order-date">5 сентября 2025</span>
-              <span class="order-price">20 000 ₽</span>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p>У вас пока нет заказов.</p>
+  {% endif %}
+</div>
+
 
     <!-- Вкладка "Профиль" -->
     <div id="profile" class="tab-content">
@@ -552,6 +508,34 @@
       
       alert('Профиль успешно обновлён!');
     }
+
+    document.querySelectorAll('.pay-btn').forEach(button => {
+  button.addEventListener('click', async () => {
+    const orderId = button.dataset.id;
+
+    button.disabled = true;
+    button.textContent = 'Обработка...';
+
+    try {
+      const res = await fetch(`/update_status/${orderId}`, { method: 'POST' });
+      const data = await res.json();
+
+      if (data.status === 'success') {
+        alert('✅ Оплата прошла, заказ теперь в процессе!');
+        location.reload(); // можно заменить на динамическое обновление
+      } else {
+        alert('⚠️ ' + data.message);
+        button.disabled = false;
+        button.textContent = 'Оплатить';
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Ошибка при оплате.');
+      button.disabled = false;
+      button.textContent = 'Оплатить';
+    }
+  });
+});
   </script>
 </body>
 </html>
