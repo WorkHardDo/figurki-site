@@ -1290,46 +1290,70 @@
     </section>
 
     <!-- Upload Form -->
-    <section class="upload-section" id="order">
-        <h2 class="section-title">Загрузите ваше фото</h2>
-        <form class="upload-form glass" id="uploadForm">
-            <div class="upload-area" id="uploadArea">
-                <div style="font-size: 3rem; margin-bottom: 1rem;">📸</div>
-                <h3>Перетащите фото сюда или кликните для выбора</h3>
-                <p>Поддерживаемые форматы: JPG, PNG, HEIC</p>
-                <input type="file" id="fileInput" accept="image/*" style="display: none;">
-            </div>
-            <div class="form-group">
-                <label>Выберите тип фигурки</label>
-                <select id="figurineType">
-                    <option value="">Выберите тип...</option>
-                    <option value="individual">Индивидуальная</option>
-                    <option value="family">Семейная</option>
-                    <option value="couple">Парная</option>
-                    <option value="wedding">Свадебная</option>
-                    <option value="anime">Аниме стиль</option>
-                    <option value="anime">Уникальный стиль</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Размер фигурки</label>
-                <select id="size">
-                    <option value="">Выберите размер...</option>
-                    <option value="small">Маленький (15 см) - 3,990₽</option>
-                    <option value="medium">Средний (20 см) - 5,990₽</option>
-                    <option value="large">Большой (25 см) - 7,990₽</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Дополнительные пожелания</label>
-                <textarea id="comments" rows="4" placeholder="Опишите особенности, которые хотите подчеркнуть..."></textarea>
-            </div>
-            <button type="submit" class="btn-primary" style="width: 100%;">
-                <span id="submitText">Оформить заказ</span>
-                <span id="submitLoading" class="loading hidden"></span>
-            </button>
-        </form>
-    </section>
+<section class="upload-section" id="order">
+  <h2 class="section-title">Загрузите ваше фото</h2>
+
+  <form class="upload-form glass" id="uploadForm" method="POST" enctype="multipart/form-data">
+    <!-- Зона загрузки -->
+    <div class="upload-area" id="uploadArea">
+      <div style="font-size: 3rem; margin-bottom: 1rem;">📸</div>
+      <h3>Перетащите фото сюда или кликните для выбора</h3>
+      <p>Поддерживаемые форматы: JPG, PNG, HEIC</p>
+    </div>
+
+    <!-- Сам input вынесен отдельно -->
+    <input 
+      type="file" 
+      id="fileInput" 
+      name="photo" 
+      accept="image/*" 
+      required 
+      style="display: none;"
+    >
+
+    <!-- Тип фигурки -->
+    <div class="form-group">
+      <label>Выберите тип фигурки</label>
+      <select id="figurineType" name="figurine_type" required>
+        <option value="">Выберите тип...</option>
+        <option value="individual">Индивидуальная</option>
+        <option value="family">Семейная</option>
+        <option value="couple">Парная</option>
+        <option value="wedding">Свадебная</option>
+        <option value="anime">Аниме стиль</option>
+        <option value="unique">Уникальный стиль</option>
+      </select>
+    </div>
+
+    <!-- Размер -->
+    <div class="form-group">
+      <label>Размер фигурки</label>
+      <select id="size" name="size" required>
+        <option value="">Выберите размер...</option>
+        <option value="small">Маленький (15 см) - 3,990₽</option>
+        <option value="medium">Средний (20 см) - 5,990₽</option>
+        <option value="large">Большой (25 см) - 7,990₽</option>
+      </select>
+    </div>
+
+    <!-- Пожелания -->
+    <div class="form-group">
+      <label>Дополнительные пожелания</label>
+      <textarea 
+        id="comments" 
+        name="comments" 
+        rows="4" 
+        placeholder="Опишите особенности..."></textarea>
+    </div>
+
+    <!-- Кнопка -->
+    <button type="submit" class="btn-primary" style="width: 100%;">
+      <span id="submitText">Оформить заказ</span>
+      <span id="submitLoading" class="loading hidden"></span>
+    </button>
+  </form>
+</section>
+
 
     <!-- Footer -->
     <footer>
@@ -1416,44 +1440,53 @@
     </div>
 
     <script>
-    // --- Mobile Menu Toggle ---
+document.addEventListener("DOMContentLoaded", () => {
+
+    // === Mobile Menu Toggle ===
     const mobileMenuToggle = document.getElementById('mobileMenuToggle');
     const navLinks = document.getElementById('navLinks');
-    mobileMenuToggle.addEventListener('click', () => {
-        navLinks.classList.toggle('active');
-        mobileMenuToggle.textContent = navLinks.classList.contains('active') ? '✕' : '☰';
-    });
-
-    // --- Carousel ---
-    let currentSlide = 0;
-    const slides = document.querySelectorAll('.carousel-item');
-    const totalSlides = slides.length;
-    function moveCarousel(direction) {
-        currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
-        const carouselInner = document.getElementById('carouselInner');
-        carouselInner.style.transform = `translateX(-${currentSlide * 100}%)`;
+    if (mobileMenuToggle && navLinks) {
+        mobileMenuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            mobileMenuToggle.textContent = navLinks.classList.contains('active') ? '✕' : '☰';
+        });
     }
-    setInterval(() => moveCarousel(1), 5000);
 
-    // --- File Upload Logic ---
+    // === Carousel ===
+    const slides = document.querySelectorAll('.carousel-item');
+    if (slides.length > 0) {
+        let currentSlide = 0;
+        const totalSlides = slides.length;
+        function moveCarousel(direction) {
+            currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
+            const carouselInner = document.getElementById('carouselInner');
+            if (carouselInner) {
+                carouselInner.style.transform = `translateX(-${currentSlide * 100}%)`;
+            }
+        }
+        setInterval(() => moveCarousel(1), 5000);
+    }
+
+    // === File Upload ===
     const uploadArea = document.getElementById('uploadArea');
     const fileInput = document.getElementById('fileInput');
-
-    uploadArea.addEventListener('click', () => fileInput.click());
-    uploadArea.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        uploadArea.classList.add('dragover');
-    });
-    uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
-    uploadArea.addEventListener('drop', (e) => {
-        e.preventDefault();
-        uploadArea.classList.remove('dragover');
-        const files = e.dataTransfer.files;
-        if (files.length > 0) handleFile(files[0]);
-    });
-    fileInput.addEventListener('change', (e) => {
-        if (e.target.files.length > 0) handleFile(e.target.files[0]);
-    });
+    if (uploadArea && fileInput) {
+        uploadArea.addEventListener('click', () => fileInput.click());
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) handleFile(files[0]);
+        });
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) handleFile(e.target.files[0]);
+        });
+    }
 
     function handleFile(file) {
         if (file.type.startsWith('image/')) {
@@ -1467,71 +1500,77 @@
         }
     }
 
-    // --- Реальная отправка формы на backend ---
-    document.getElementById("uploadForm").addEventListener("submit", async (e) => {
-        e.preventDefault();
+    // === Реальная отправка формы на backend ===
+    const uploadForm = document.getElementById("uploadForm");
+    if (uploadForm) {
+        uploadForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
 
-        const file = document.getElementById("fileInput").files[0];
-        const figurineType = document.getElementById("figurineType").value;
-        const size = document.getElementById("size").value;
-        const comments = document.getElementById("comments").value;
+            const file = document.getElementById("fileInput").files[0];
+            const figurineType = document.getElementById("figurineType").value;
+            const size = document.getElementById("size").value;
+            const comments = document.getElementById("comments").value;
 
-        if (!file || !figurineType || !size) {
-            showNotification("Ошибка", "Пожалуйста, заполните все поля и прикрепите фото", "error");
-            return;
-        }
+            if (!file || !figurineType || !size) {
+                showNotification("Ошибка", "Пожалуйста, заполните все поля и прикрепите фото", "error");
+                return;
+            }
 
-        const formData = new FormData();
-        formData.append("photo", file);
-        formData.append("figurine_type", figurineType);
-        formData.append("size", size);
-        formData.append("comments", comments);
+            const formData = new FormData();
+            formData.append("photo", file);
+            formData.append("figurine_type", figurineType);
+            formData.append("size", size);
+            formData.append("comments", comments);
 
-        const submitText = document.getElementById('submitText');
-        const submitLoading = document.getElementById('submitLoading');
-        submitText.classList.add('hidden');
-        submitLoading.classList.remove('hidden');
+            const submitText = document.getElementById('submitText');
+            const submitLoading = document.getElementById('submitLoading');
+            if (submitText && submitLoading) {
+                submitText.classList.add('hidden');
+                submitLoading.classList.remove('hidden');
+            }
 
-        try {
-    const res = await fetch("/create_order", {
-        method: "POST",
-        body: formData
-    });
+            try {
+                const res = await fetch("/create_order", {
+                    method: "POST",
+                    body: formData
+                });
 
-    if (res.status === 401) {
-        // Пользователь не вошёл
-        window.location.href = "/dashboard.html";
-        return;
+                if (res.status === 401) {
+                    window.location.href = "/dashboard.html";
+                    return;
+                }
+
+                const data = await res.json();
+                showNotification(
+                    data.status === "success" ? "Готово!" : "Ошибка",
+                    data.message,
+                    data.status === "success" ? "success" : "error"
+                );
+
+                if (data.status === "success") {
+                    uploadForm.reset();
+                    uploadArea.innerHTML = `
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">📸</div>
+                        <h3>Перетащите фото сюда или кликните для выбора</h3>
+                        <p>Поддерживаемые форматы: JPG, PNG, HEIC</p>
+                    `;
+                }
+            } catch (err) {
+                console.error(err);
+                showNotification("Ошибка", "Не удалось отправить заказ", "error");
+            } finally {
+                if (submitText && submitLoading) {
+                    submitText.classList.remove('hidden');
+                    submitLoading.classList.add('hidden');
+                }
+            }
+        });
     }
 
-    const data = await res.json();
-    showNotification(
-        data.status === "success" ? "Готово!" : "Ошибка",
-        data.message,
-        data.status === "success" ? "success" : "error"
-    );
-
-    if (data.status === "success") {
-        document.getElementById("uploadForm").reset();
-        uploadArea.innerHTML = `
-            <div style="font-size: 3rem; margin-bottom: 1rem;">📸</div>
-            <h3>Перетащите фото сюда или кликните для выбора</h3>
-            <p>Поддерживаемые форматы: JPG, PNG, HEIC</p>
-        `;
-    }
-} catch (err) {
-    console.error(err);
-    showNotification("Ошибка", "Не удалось отправить заказ", "error");
-} finally {
-    submitText.classList.remove('hidden');
-    submitLoading.classList.add('hidden');
-}
-
-    });
-
-    // --- Notifications ---
+    // === Notifications ===
     function showNotification(title, text, type = 'success') {
         const notification = document.getElementById('notification');
+        if (!notification) return;
         const notificationTitle = document.getElementById('notificationTitle');
         const notificationText = document.getElementById('notificationText');
         const notificationIcon = notification.querySelector('.notification-icon');
@@ -1551,14 +1590,15 @@
         setTimeout(() => notification.classList.remove('active'), 3000);
     }
 
-    // --- Chat Widget ---
+    // === Chat Widget ===
+    const chatInput = document.getElementById('chatInput');
+    const chatMessages = document.getElementById('chatMessages');
     function toggleChat() {
         const chatWindow = document.getElementById('chatWindow');
-        chatWindow.classList.toggle('active');
+        if (chatWindow) chatWindow.classList.toggle('active');
     }
     function sendMessage() {
-        const chatInput = document.getElementById('chatInput');
-        const chatMessages = document.getElementById('chatMessages');
+        if (!chatInput || !chatMessages) return;
         if (chatInput.value.trim()) {
             const message = document.createElement('div');
             message.style.marginBottom = '1rem';
@@ -1575,13 +1615,16 @@
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
     }
-    document.getElementById('chatInput').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') sendMessage();
-    });
+    if (chatInput) {
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+    }
 
-    // --- Modal ---
+    // === Modal ===
     function showModal(title, content) {
         const modal = document.getElementById('modal');
+        if (!modal) return;
         const modalTitle = document.getElementById('modalTitle');
         const modalBody = document.getElementById('modalBody');
         modalTitle.textContent = title;
@@ -1589,25 +1632,31 @@
         modal.classList.add('active');
     }
     function closeModal() {
-        document.getElementById('modal').classList.remove('active');
+        const modal = document.getElementById('modal');
+        if (modal) modal.classList.remove('active');
     }
-    document.getElementById('modal').addEventListener('click', (e) => {
-        if (e.target.id === 'modal') closeModal();
-    });
+    const modal = document.getElementById('modal');
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target.id === 'modal') closeModal();
+        });
+    }
 
-    // --- Scroll Effects ---
-    window.addEventListener('scroll', () => {
-        const header = document.querySelector('header');
-        if (window.scrollY > 50) {
-            header.style.background = 'rgba(255,255,255,0.9)';
-            header.style.boxShadow = '0 4px 20px rgba(0,0,0,0.05)';
-        } else {
-            header.style.background = 'rgba(255,255,255,0.7)';
-            header.style.boxShadow = 'none';
-        }
-    });
+    // === Scroll Effects ===
+    const header = document.querySelector('header');
+    if (header) {
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.style.background = 'rgba(255,255,255,0.9)';
+                header.style.boxShadow = '0 4px 20px rgba(0,0,0,0.05)';
+            } else {
+                header.style.background = 'rgba(255,255,255,0.7)';
+                header.style.boxShadow = 'none';
+            }
+        });
+    }
 
-    // --- Smooth Scrolling ---
+    // === Smooth Scrolling ===
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
@@ -1616,18 +1665,20 @@
         });
     });
 
-    // --- Animations при появлении ---
-    document.addEventListener('DOMContentLoaded', () => {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) entry.target.classList.add('animate-in');
-            });
+    // === Анимации при появлении ===
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) entry.target.classList.add('animate-in');
         });
-        document.querySelectorAll('.glass, .category-card, .review-card').forEach(el => observer.observe(el));
-        setTimeout(() => {
-            showNotification('Добро пожаловать!', 'Создайте свою первую фигурку прямо сейчас');
-        }, 2000);
     });
+    document.querySelectorAll('.glass, .category-card, .review-card').forEach(el => observer.observe(el));
+
+    // === Приветственное уведомление ===
+    setTimeout(() => {
+        showNotification('Добро пожаловать!', 'Создайте свою первую фигурку прямо сейчас');
+    }, 2000);
+});
 </script>
+
 </body>
 </html>
