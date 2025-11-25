@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FigurineMe - Персонализированные фигурки по фото</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
     <style>
         :root {
             --primary: #007AFF;
@@ -1252,43 +1253,6 @@
         </div>
     </section>
 
-    <!-- Reviews -->
-    <section class="reviews">
-        <h2 class="section-title">Отзывы клиентов</h2>
-        <div class="reviews-container">
-            <div class="review-card glass">
-                <div class="review-header">
-                    <div class="avatar">МК</div>
-                    <div>
-                        <h4>Мария К.</h4>
-                        <div class="stars">★★★★★</div>
-                    </div>
-                </div>
-                <p>Заказала фигурку себя по фото. Результат превзошел все ожидания! Очень похоже и качественно сделано.</p>
-            </div>
-            <div class="review-card glass">
-                <div class="review-header">
-                    <div class="avatar">АИ</div>
-                    <div>
-                        <h4>Алексей И.</h4>
-                        <div class="stars">★★★★★</div>
-                    </div>
-                </div>
-                <p>Сделали фигурку нашей семьи на заказ. Отличный подарок для родителей! Всем советую.</p>
-            </div>
-            <div class="review-card glass">
-                <div class="review-header">
-                    <div class="avatar">ЕП</div>
-                    <div>
-                        <h4>Елена П.</h4>
-                        <div class="stars">★★★★★</div>
-                    </div>
-                </div>
-                <p>Свадебная фигурка получилась просто волшебной! Теперь у нас есть память на всю жизнь.</p>
-            </div>
-        </div>
-    </section>
-
     <!-- Upload Form -->
 <section class="upload-section" id="order">
   <h2 class="section-title">Загрузите ваше фото</h2>
@@ -1397,26 +1361,6 @@
         </div>
     </footer>
 
-    <!-- Chat Widget -->
-    <div class="chat-widget">
-        <div class="chat-window" id="chatWindow">
-            <div class="chat-header">
-                <h4>Поддержка FigurineMe</h4>
-                <button class="modal-close" onclick="toggleChat()">×</button>
-            </div>
-            <div class="chat-messages" id="chatMessages">
-                <div style="margin-bottom: 1rem;">
-                    <strong>Менеджер:</strong> Здравствуйте! Чем могу помочь?
-                </div>
-            </div>
-            <div class="chat-input">
-                <input type="text" placeholder="Введите сообщение..." id="chatInput">
-                <button class="chat-send" onclick="sendMessage()">➤</button>
-            </div>
-        </div>
-        <div class="chat-button" onclick="toggleChat()">💬</div>
-    </div>
-
     <!-- Notification -->
     <div class="notification" id="notification">
         <div class="notification-icon">✓</div>
@@ -1442,15 +1386,7 @@
     <script>
 document.addEventListener("DOMContentLoaded", () => {
 
-    // === Mobile Menu Toggle ===
-    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-    const navLinks = document.getElementById('navLinks');
-    if (mobileMenuToggle && navLinks) {
-        mobileMenuToggle.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-            mobileMenuToggle.textContent = navLinks.classList.contains('active') ? '✕' : '☰';
-        });
-    }
+
 
     // === Carousel ===
     const slides = document.querySelectorAll('.carousel-item');

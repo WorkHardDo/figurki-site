@@ -2,7 +2,6 @@
     <nav>
         <a href="{{ url_for('index') }}" class="logo">FigurineMe</a>
         <div class="nav-links" id="navLinks">
-            <a href="{{ url_for('index') }}" class="{% if request.endpoint == 'index' %}active{% endif %}">Главная</a>
             <a href="{{ url_for('single') }}">Индивидуальные</a>
             <a href="{{ url_for('family') }}">Семейные</a>
             <a href="{{ url_for('couple') }}">Парные</a>
@@ -19,4 +18,5 @@
         </div>
         <button class="mobile-menu-toggle" id="mobileMenuToggle">☰</button>
     </nav>
+    <script src="{{ url_for('static', filename='js/header.js') }}"></script>
 </header>
