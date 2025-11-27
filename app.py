@@ -11,7 +11,22 @@ load_dotenv()
 
 # --- Настройки приложения ---
 app = Flask(__name__, instance_relative_config=True)
+
 app.secret_key = os.getenv('SECRET_KEY', 'dev_secret')
+
+from flask_mail import Mail, Message
+from itsdangerous import URLSafeTimedSerializer
+
+# email config
+app.config['MAIL_SERVER'] = os.getenv("MAIL_SERVER")
+app.config['MAIL_PORT'] = int(os.getenv("MAIL_PORT", 465))
+app.config['MAIL_USE_SSL'] = os.getenv("MAIL_USE_SSL", "True") == "True"
+app.config['MAIL_USERNAME'] = os.getenv("MAIL_USERNAME")
+app.config['MAIL_PASSWORD'] = os.getenv("MAIL_PASSWORD")
+app.config['MAIL_DEFAULT_SENDER'] = os.getenv("MAIL_DEFAULT_SENDER")
+
+mail = Mail(app)
+serializer = URLSafeTimedSerializer(app.secret_key)
 
 # --- Пути и база ---
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
@@ -36,6 +51,10 @@ class User(db.Model, UserMixin):
     name = db.Column(db.String(100))
     phone = db.Column(db.String(30))
     address = db.Column(db.String(255))
+    confirmed = db.Column(db.Boolean, default=False)
+    confirm_token = db.Column(db.String(255), nullable=True)
+
+    is_admin = db.Column(db.Boolean, default=False)
 
     orders = db.relationship('Order', backref='user', lazy=True)
 
@@ -49,6 +68,20 @@ class Order(db.Model):
     comments = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     status = db.Column(db.String(50), default='ожидает оплаты')
+
+
+def send_confirmation_email(user):
+    token = serializer.dumps(user.email, salt="email-confirm")
+
+    confirm_url = url_for('confirm_email', token=token, _external=True)
+
+    msg = Message(
+        subject="Активация аккаунта на сайте",
+        recipients=[user.email],
+        body=f"Здравствуйте!\n\nДля активации аккаунта перейдите по ссылке:\n{confirm_url}\n\nЕсли это были не вы — проигнорируйте письмо."
+    )
+
+    mail.send(msg)
 
 
 # Создание всех таблиц при старте приложения
@@ -88,6 +121,85 @@ def anime():
 def styles():
     return render_template('styles.html')
 
+from functools import wraps
+
+def admin_required(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        if not current_user.is_authenticated or not current_user.is_admin:
+            flash("Доступ запрещён", "danger")
+            return redirect(url_for("index"))
+        return f(*args, **kwargs)
+    return wrapper
+
+@app.route('/admin/orders')
+@admin_required
+def admin_orders():
+    sort = request.args.get("sort", "desc")
+    hide_done = request.args.get("hide_done") == "1"
+    paid_only = request.args.get("paid_only") == "1"
+
+    # БАЗОВЫЙ запрос
+    query = Order.query
+
+    # Скрыть готовые
+    if hide_done:
+        query = query.filter(Order.status != "готово")
+
+    # Показать только оплаченные (т.е. "в процессе")
+    if paid_only:
+        query = query.filter(Order.status == "в процессе")
+
+    # Сортировка
+    if sort == "asc":
+        orders = query.order_by(Order.created_at.asc()).all()
+    else:
+        orders = query.order_by(Order.created_at.desc()).all()
+
+    # Цена
+    def get_price(size):
+        if size == "small": return 3990
+        if size == "medium": return 5990
+        if size == "large": return 7990
+        return 0
+
+    for o in orders:
+        o.price = get_price(o.size)
+
+    return render_template(
+        "admin.html",
+        orders=orders,
+        sort=sort,
+        hide_done=hide_done,
+        paid_only=paid_only
+    )
+
+
+@app.route("/admin/order_done/<int:order_id>", methods=["POST"])
+@admin_required
+def admin_order_done(order_id):
+    order = Order.query.get(order_id)
+
+    if not order:
+        return jsonify({"status": "error", "message": "Заказ не найден"}), 404
+
+    order.status = "готово"
+    db.session.commit()
+
+    return jsonify({"status": "success", "message": "Заказ отмечен как готовый"})
+
+@app.route("/admin")
+@login_required
+def admin_panel():
+    if not current_user.is_admin:
+        return redirect(url_for("index"))
+
+    orders = Order.query.order_by(Order.created_at.desc()).all()
+    users = User.query.all()
+
+    return render_template("admin.html", orders=orders, users=users)
+
+
 # --- Аутентификация ---
 @app.route('/dashboard', methods=['GET', 'POST'])
 def dashboard():
@@ -105,12 +217,20 @@ def dashboard():
 
             user = User.query.filter_by(email=email).first()
 
-            if user and check_password_hash(user.password_hash, password):
-                login_user(user)
-                return redirect(url_for('cabinet'))
+            if not user:
+                flash("Неверный email или пароль", "danger")
+                return redirect(url_for('dashboard'))
 
-            flash("Неверный email или пароль", "danger")
+            if not check_password_hash(user.password_hash, password):
+                flash("Неверный email или пароль", "danger")
+                return redirect(url_for('dashboard'))
 
+            if not user.confirmed:
+                flash("Подтвердите email, прежде чем войти.", "warning")
+                return redirect(url_for('dashboard'))
+
+            login_user(user)
+            return redirect(url_for('cabinet'))
         # ------------------- РЕГИСТРАЦИЯ -------------------
         elif action == 'register':
             name = request.form.get("username")
@@ -136,16 +256,50 @@ def dashboard():
                 password_hash=hashed,
                 name=name,
                 phone=phone,
-                address=address
+                address=address,
+                confirmed=False
             )
 
-            db.session.add(new_user)
-            db.session.commit()
+        db.session.add(new_user)
+        db.session.commit()
 
-            flash("Регистрация успешна! Теперь войдите в систему.", "success")
-            return redirect(url_for('dashboard'))
+        send_confirmation_email(new_user)
+
+        flash("Регистрация успешна! Подтвердите email, чтобы войти.", "success")
+        return redirect(url_for('dashboard'))
+
+
+        flash("Регистрация успешна! Теперь войдите в систему.", "success")
+        return redirect(url_for('dashboard'))
 
     return render_template('dashboard.html')
+
+
+@app.route('/confirm/<token>')
+def confirm_email(token):
+    try:
+        email = serializer.loads(token, salt="email-confirm", max_age=3600)
+    except Exception:
+        flash("Ссылка подтверждения недействительна или устарела.", "danger")
+        return redirect(url_for('dashboard'))
+
+    user = User.query.filter_by(email=email).first()
+
+    if not user:
+        flash("Пользователь не найден", "danger")
+        return redirect(url_for('dashboard'))
+
+    if user.confirmed:
+        flash("Аккаунт уже подтверждён.", "info")
+        return redirect(url_for('dashboard'))
+
+    user.confirmed = True
+    user.confirm_token = None
+    db.session.commit()
+
+    flash("Ваш email успешно подтверждён! Теперь вы можете войти.", "success")
+    return redirect(url_for('dashboard'))
+
 
 
 @app.route('/logout')

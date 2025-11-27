@@ -1,0 +1,49 @@
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background: #f3f4f6;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+.orders-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.orders-table th, .orders-table td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.orders-table th {
+    background: #f9fafb;
+    text-align: left;
+}
+
+.status {
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.status.pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status.process {
+    background: #cce5ff;
+    color: #004085;
+}
+
+.status.done {
+    background: #d4edda;
+    color: #155724;
+}

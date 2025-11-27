@@ -10,6 +10,11 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(256), nullable=False)
     name = db.Column(db.String(100))
     phone = db.Column(db.String(30))
+    confirmed = db.Column(db.Boolean, default=False)
+    confirm_token = db.Column(db.String(255), nullable=True)
+    
+    is_admin = db.Column(db.Boolean, default=False)
+    
     orders = db.relationship('Order', backref='user', lazy=True)
 
 class Order(db.Model):

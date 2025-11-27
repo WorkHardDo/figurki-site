@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Админка — Заказы</title>
+  <link rel="stylesheet" href="/static/css/admin.css">
+</head>
+<body>
+
+<h1>Все заказы</h1>
+
+<div class="controls">
+
+  <!-- Сортировка -->
+  <a href="/admin/orders?sort={{ 'asc' if sort == 'desc' else 'desc' }}{% if hide_done %}&hide_done=1{% endif %}{% if paid_only %}&paid_only=1{% endif %}"
+     class="sort-btn">
+    {% if sort == 'desc' %}
+      Сначала старые
+    {% else %}
+      Сначала новые
+    {% endif %}
+  </a>
+
+  <!-- Скрыть готовые -->
+  <a href="/admin/orders?sort={{ sort }}&hide_done={{ 0 if hide_done else 1 }}{% if paid_only %}&paid_only=1{% endif %}"
+     class="sort-btn">
+    {% if hide_done %}
+      Показать готовые
+    {% else %}
+      Скрыть готовые
+    {% endif %}
+  </a>
+
+  <!-- Показать оплаченные -->
+  <a href="/admin/orders?sort={{ sort }}{% if hide_done %}&hide_done=1{% endif %}&paid_only={{ 0 if paid_only else 1 }}"
+     class="sort-btn">
+    {% if paid_only %}
+      Показать все
+    {% else %}
+      Показать только оплаченные
+    {% endif %}
+  </a>
+
+</div>
+
+<table class="orders-table">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Пользователь</th>
+      <th>Фото</th>
+      <th>Тип</th>
+      <th>Размер</th>
+      <th>Цена</th>
+      <th>Дата</th>
+      <th>Статус</th>
+      <th>Действия</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {% for o in orders %}
+    <tr>
+      <td>{{ o.id }}</td>
+
+      <td>
+        {% if o.user %}
+          {{ o.user.name }}<br>
+          <small>{{ o.user.email }}</small>
+        {% else %}
+          —
+        {% endif %}
+      </td>
+
+      <td>
+        <img src="/static/uploads/{{ o.photo_filename }}" width="80" style="border-radius:10px">
+      </td>
+
+      <td>{{ o.figurine_type }}</td>
+      <td>{{ o.size }}</td>
+      <td>{{ o.price }} ₽</td>
+      <td>{{ o.created_at.strftime("%d.%m.%Y %H:%M") }}</td>
+
+      <td>
+        {% if o.status == "ожидает оплаты" %}
+          <span class="status pending">Ожидает оплаты</span>
+        {% elif o.status == "в процессе" %}
+          <span class="status process">В процессе</span>
+        {% else %}
+          <span class="status done">Готово</span>
+        {% endif %}
+      </td>
+
+      <td>
+        {% if o.status != "готово" %}
+          <button onclick="markDone('{{ o.id }}')" class="btn-done">Отметить готовым</button>
+        {% else %}
+          <span>-</span>
+        {% endif %}
+      </td>
+
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<script>
+function markDone(id) {
+    fetch(`/admin/order_done/${id}`, {
+        method: "POST"
+    })
+    .then(r => r.json())
+    .then(data => {
+        alert(data.message);
+        location.reload();
+    });
+}
+</script>
+
+</body>
+</html>
