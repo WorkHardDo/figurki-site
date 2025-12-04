@@ -6,6 +6,7 @@
   <title>Парные Фигурки на Заказ | FigureArt</title>
   <link rel="stylesheet" href="/static/css/form.css">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/footer.css') }}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -361,14 +362,6 @@
       font-weight: 600;
     }
 
-    footer {
-      background: rgba(255, 255, 255, 0.5);
-      backdrop-filter: blur(24px);
-      border-top: 1px solid rgba(255, 255, 255, 0.3);
-      padding: 3rem 2rem;
-      margin-top: 4rem;
-    }
-
     .footer-content {
       max-width: 1200px;
       margin: 0 auto;
@@ -408,7 +401,7 @@
       color: #6b7280;
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 1080px) {
       .nav-links {
         display: none;
       }
@@ -485,43 +478,30 @@
         <h2 class="section-title">Наши <span class="gradient-text">работы</span></h2>
         <p class="section-subtitle">Посмотрите на примеры парных фигурок</p>
         <div class="grid grid-3">
+          
           <div class="glass-card gallery-item">
-            <img src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=800&q=80" alt="Романтическая пара">
-            <div class="gallery-overlay">
-              <h3>Анна и Дмитрий</h3>
-              <p>Классический романтический стиль</p>
-            </div>
-          </div>
-          <div class="glass-card gallery-item">
-            <img src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=800&q=80" alt="Пара на прогулке">
-            <div class="gallery-overlay">
-              <h3>Мария и Александр</h3>
-              <p>Прогулка вдвоём</p>
-            </div>
-          </div>
-          <div class="glass-card gallery-item">
-            <img src="https://images.unsplash.com/photo-1518568814500-bf0f8d125f46?w=800&q=80" alt="Влюблённая пара">
+            <img src="https://ir56.ru/wp-content/uploads/2022/08/8627991.jpg" alt="Влюблённая пара">
             <div class="gallery-overlay">
               <h3>Елена и Сергей</h3>
               <p>Минималистичный стиль</p>
             </div>
           </div>
           <div class="glass-card gallery-item">
-            <img src="https://images.unsplash.com/photo-1514315384763-ba401779410f?w=800&q=80" alt="Пара с домашним питомцем">
+            <img src="https://cs5.livemaster.ru/storage/c8/2f/8fcb570a57edd1e8629650f2d8wj--podarki-k-prazdnikam-figurka-statuetka-po-foto-para-s-buketom.jpg" alt="Пара с домашним питомцем">
             <div class="gallery-overlay">
               <h3>Ольга и Игорь</h3>
-              <p>С домашним питомцем</p>
+              <p>С букетом</p>
             </div>
           </div>
           <div class="glass-card gallery-item">
-            <img src="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?w=800&q=80" alt="Танцующая пара">
+            <img src="https://holst78.ru/wp-content/uploads/2024/08/56782365782.jpg" alt="Танцующая пара">
             <div class="gallery-overlay">
               <h3>Ирина и Максим</h3>
               <p>Танцевальная композиция</p>
             </div>
           </div>
           <div class="glass-card gallery-item">
-            <img src="https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800&q=80" alt="Объятия">
+            <img src="https://holst54.ru/wp-content/uploads/2024/08/567823657825.png" alt="Объятия">
             <div class="gallery-overlay">
               <h3>Наталья и Виктор</h3>
               <p>Нежные объятия</p>
@@ -623,34 +603,7 @@
 
   </main>
 
-  <footer>
-    <div class="footer-content">
-      <div class="footer-section">
-        <h3>FigureArt</h3>
-        <p style="color: #6b7280;">Создаём уникальные персонализированные фигурки по фотографиям</p>
-      </div>
-      <div class="footer-section">
-        <h3>Услуги</h3>
-        <ul>
-          <li><a href="#">Индивидуальные фигурки</a></li>
-          <li><a href="#">Семейные композиции</a></li>
-          <li><a href="#">Свадебные фигурки</a></li>
-          <li><a href="#">Аниме стиль</a></li>
-        </ul>
-      </div>
-      <div class="footer-section">
-        <h3>Контакты</h3>
-        <ul>
-          <li>📞 +7 (999) 123-45-67</li>
-          <li>📧 info@figureart.ru</li>
-          <li>📍 Москва, Россия</li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>&copy; 2024 FigureArt. Все права защищены.</p>
-    </div>
-  </footer>
+  {% include '_footer.html' %}
 
   <script>
 document.addEventListener("DOMContentLoaded", () => {

@@ -6,6 +6,7 @@
   <title>Свадебные Фигурки на Заказ | FigureArt</title>
   <link rel="stylesheet" href="/static/css/form.css">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/footer.css') }}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -361,14 +362,6 @@
       font-weight: 600;
     }
 
-    footer {
-      background: rgba(255, 255, 255, 0.5);
-      backdrop-filter: blur(24px);
-      border-top: 1px solid rgba(255, 255, 255, 0.3);
-      padding: 3rem 2rem;
-      margin-top: 4rem;
-    }
-
     .footer-content {
       max-width: 1200px;
       margin: 0 auto;
@@ -408,7 +401,7 @@
       color: #6b7280;
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 1080px) {
       .nav-links {
         display: none;
       }
@@ -486,43 +479,30 @@
         <h2 class="section-title">Наши <span class="gradient-text">работы</span></h2>
         <p class="section-subtitle">Посмотрите на примеры свадебных фигурок</p>
         <div class="grid grid-3">
+          
           <div class="glass-card gallery-item">
-            <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80" alt="Классическая свадьба">
-            <div class="gallery-overlay">
-              <h3>Анна и Дмитрий</h3>
-              <p>Классический свадебный стиль</p>
-            </div>
-          </div>
-          <div class="glass-card gallery-item">
-            <img src="https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800&q=80" alt="Романтическая свадьба">
-            <div class="gallery-overlay">
-              <h3>Елена и Сергей</h3>
-              <p>Романтическая композиция</p>
-            </div>
-          </div>
-          <div class="glass-card gallery-item">
-            <img src="https://images.unsplash.com/photo-1594040226329-7f0b3e189b0b?w=800&q=80" alt="Современная свадьба">
+            <img src="https://ae04.alicdn.com/kf/S7ccc04f3f0254f05aa900060ab1adbae5.jpg" alt="Современная свадьба">
             <div class="gallery-overlay">
               <h3>Мария и Александр</h3>
               <p>Современный минимализм</p>
             </div>
           </div>
           <div class="glass-card gallery-item">
-            <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800&q=80" alt="Винтажная свадьба">
+            <img src="https://cs5.livemaster.ru/storage/f8/87/e97a4da284c3f84ec674b39e91ob--svadebnyj-salon-figurki-na-svadebnyj-tort-matreshki.jpg" alt="Винтажная свадьба">
             <div class="gallery-overlay">
               <h3>Ольга и Игорь</h3>
               <p>Винтажный стиль</p>
             </div>
           </div>
           <div class="glass-card gallery-item">
-            <img src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=800&q=80" alt="Пляжная свадьба">
+            <img src="https://tytsvadba.ru/wp-content/uploads/2022/11/figurki-na-svadebnyj-tort-115.jpg" alt="Пляжная свадьба">
             <div class="gallery-overlay">
               <h3>Ирина и Максим</h3>
               <p>Пляжная церемония</p>
             </div>
           </div>
           <div class="glass-card gallery-item">
-            <img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800&q=80" alt="Тематическая свадьба">
+            <img src="https://www.sv-shtuchki.ru/images/stories/blog/2013/11_nov/_________________524e92f1dd4b6.jpg" alt="Тематическая свадьба">
             <div class="gallery-overlay">
               <h3>Наталья и Виктор</h3>
               <p>Тематическая свадьба</p>
@@ -623,34 +603,7 @@
 
   </main>
 
-  <footer>
-    <div class="footer-content">
-      <div class="footer-section">
-        <h3>FigureArt</h3>
-        <p style="color: #6b7280;">Создаём уникальные персонализированные фигурки по фотографиям</p>
-      </div>
-      <div class="footer-section">
-        <h3>Услуги</h3>
-        <ul>
-          <li><a href="#">Индивидуальные фигурки</a></li>
-          <li><a href="#">Семейные композиции</a></li>
-          <li><a href="#">Парные фигурки</a></li>
-          <li><a href="#">Аниме стиль</a></li>
-        </ul>
-      </div>
-      <div class="footer-section">
-        <h3>Контакты</h3>
-        <ul>
-          <li>📞 +7 (999) 123-45-67</li>
-          <li>📧 info@figureart.ru</li>
-          <li>📍 Москва, Россия</li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>&copy; 2024 FigureArt. Все права защищены.</p>
-    </div>
-  </footer>
+  {% include '_footer.html' %}
 
   <script>
 document.addEventListener("DOMContentLoaded", () => {

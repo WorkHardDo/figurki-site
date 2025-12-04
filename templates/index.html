@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FigurineMe - Персонализированные фигурки по фото</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/footer.css') }}">
+
     <style>
         :root {
             --primary: #007AFF;
@@ -61,6 +63,59 @@
             border-bottom: 1px solid var(--border);
             transition: var(--transition);
         }
+
+        .carousel {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    margin: 40px auto;
+    overflow: hidden;
+    border-radius: 16px;
+}
+
+.carousel-inner {
+    display: flex;
+    transition: transform 0.5s ease;
+}
+
+.carousel-item {
+    min-width: 100%;
+    height: 500px;
+}
+
+.carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; 
+    background-color: #f8f8f8; 
+}
+
+
+.carousel-controls {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.carousel-btn {
+    pointer-events: all;
+    background: rgba(0,0,0,0.5);
+    border: none;
+    color: white;
+    font-size: 40px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.carousel-btn:hover {
+    background: rgba(0,0,0,0.8);
+}
 
         nav {
             display: flex;
@@ -210,26 +265,19 @@
         }
 
         .carousel-item {
-            min-width: 100%;
-            height: 500px;
-            background: linear-gradient(135deg, #F2F2F7 0%, #E5E5EA 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            color: var(--text-secondary);
-            position: relative;
-            overflow: hidden;
-        }
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 500px;
+    overflow: hidden;
+}
 
         .carousel-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
+    max-height: 100%;
+    width: auto;
+    height: 100%;
+    object-fit: contain;
+}
 
         .carousel-controls {
             position: absolute;
@@ -470,7 +518,7 @@
         }
 
         /* Responsive */
-        @media (max-width: 768px) {
+        @media (max-width: 1080px) {
             .nav-links {
                 display: none;
                 position: absolute;
@@ -1199,22 +1247,34 @@
 
     <!-- Carousel -->
     <section class="carousel">
-        <div class="carousel-inner" id="carouselInner">
-            <div class="carousel-item">
-                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 500'%3E%3Cdefs%3E%3ClinearGradient id='grad1' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23FF6B6B;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%234ECDC4;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='800' height='500' fill='url(%23grad1)'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='24' font-family='Arial'%3EИндивидуальная фигурка%3C/text%3E%3C/svg%3E" alt="Индивидуальная фигурка">
-            </div>
-            <div class="carousel-item">
-                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 500'%3E%3Cdefs%3E%3ClinearGradient id='grad2' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23A8E6CF;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23FFD93D;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='800' height='500' fill='url(%23grad2)'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='24' font-family='Arial'%3EСемейная фигурка%3C/text%3E%3C/svg%3E" alt="Семейная фигурка">
-            </div>
-            <div class="carousel-item">
-                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 500'%3E%3Cdefs%3E%3ClinearGradient id='grad3' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23FF8A80;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23EA80FC;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='800' height='500' fill='url(%23grad3)'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='24' font-family='Arial'%3EСвадебная фигурка%3C/text%3E%3C/svg%3E" alt="Свадебная фигурка">
-            </div>
+        <h2 class="section-title">Примеры наших работ</h2>
+    <div class="carousel-inner" id="carouselInner">
+        <div class="carousel-item">
+            <img src="https://ir56.ru/wp-content/uploads/2024/01/857316583.jpg">
         </div>
-        <div class="carousel-controls">
-            <button class="carousel-btn" onclick="moveCarousel(-1)">‹</button>
-            <button class="carousel-btn" onclick="moveCarousel(1)">›</button>
+        <div class="carousel-item">
+            <img src="https://avatars.mds.yandex.net/get-ydo/1523397/2a0000016b220fff9ce991c0839761d1e144/diploma">
         </div>
-    </section>
+        <div class="carousel-item">
+            <img src="https://ir56.ru/wp-content/uploads/2022/08/8627991.jpg">
+        </div>
+        <div class="carousel-item">
+            <img src="https://ae04.alicdn.com/kf/S7ccc04f3f0254f05aa900060ab1adbae5.jpg">
+        </div>
+        <div class="carousel-item">
+            <img src="https://janime.ru/upload/dev2fun.imagecompress/webp/medialibrary/716/2rer0ife5x6g3h7530mpcdextjuvocpg/content_img.webp">
+        </div>
+        <div class="carousel-item">
+            <img src="https://static.insales-cdn.com/r/O2DNAwB6ow0/rs:fit:1000:0:1/plain/images/products/1/3598/1020833294/01.jpg@jpg">
+        </div>
+    </div>
+
+    <div class="carousel-controls">
+        <button class="carousel-btn" id="prevBtn">‹</button>
+        <button class="carousel-btn" id="nextBtn">›</button>
+    </div>
+</section>
+
 
     <!-- Categories -->
     <section class="categories">
@@ -1320,46 +1380,7 @@
 
 
     <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>FigurineMe</h3>
-                <p>Создаем уникальные фигурки по вашим фотографиям с любовью и вниманием к деталям.</p>
-                <div class="social-links">
-                    <a href="#">📘</a>
-                    <a href="#">📷</a>
-                    <a href="#">🐦</a>
-                    <a href="#">📺</a>
-                </div>
-            </div>
-            <div class="footer-section">
-                <h3>Услуги</h3>
-                <a href="#individual">Индивидуальные фигурки</a>
-                <a href="#family">Семейные фигурки</a>
-                <a href="#couples">Парные фигурки</a>
-                <a href="#wedding">Свадебные фигурки</a>
-                <a href="#anime">Аниме стиль</a>
-            </div>
-            <div class="footer-section">
-                <h3>Компания</h3>
-                <a href="#">О нас</a>
-                <a href="#">Как заказать</a>
-                <a href="#">Доставка и оплата</a>
-                <a href="#">Возврат</a>
-                <a href="#">Контакты</a>
-            </div>
-            <div class="footer-section">
-                <h3>Контакты</h3>
-                <p>📧 support@figurineme.com</p>
-                <p>📱 +7 (999) 123-45-67</p>
-                <p>📍 Москва, ул. Творческая, 1</p>
-                <p>⏰ Пн-Вс: 9:00-21:00</p>
-            </div>
-        </div>
-        <div style="text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #333;">
-            <p>&copy; 2024 FigurineMe. Все права защищены. | <a href="#" style="color: #999;">Политика конфиденциальности</a> | <a href="#" style="color: #999;">Условия использования</a></p>
-        </div>
-    </footer>
+    {% include '_footer.html' %}
 
     <!-- Notification -->
     <div class="notification" id="notification">
@@ -1388,20 +1409,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-    // === Carousel ===
-    const slides = document.querySelectorAll('.carousel-item');
-    if (slides.length > 0) {
-        let currentSlide = 0;
-        const totalSlides = slides.length;
-        function moveCarousel(direction) {
-            currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
-            const carouselInner = document.getElementById('carouselInner');
-            if (carouselInner) {
-                carouselInner.style.transform = `translateX(-${currentSlide * 100}%)`;
-            }
-        }
-        setInterval(() => moveCarousel(1), 5000);
-    }
+    
 
     // === File Upload ===
     const uploadArea = document.getElementById('uploadArea');
@@ -1614,6 +1622,28 @@ document.addEventListener("DOMContentLoaded", () => {
         showNotification('Добро пожаловать!', 'Создайте свою первую фигурку прямо сейчас');
     }, 2000);
 });
+// === карусель =====
+let slideIndex = 0;
+
+function updateCarousel() {
+    const inner = document.getElementById("carouselInner");
+    inner.style.transform = `translateX(-${slideIndex * 100}%)`;
+}
+
+function moveCarousel(direction) {
+    const items = document.querySelectorAll(".carousel-item").length;
+
+    slideIndex += direction;
+
+    if (slideIndex < 0) slideIndex = items - 1;
+    if (slideIndex >= items) slideIndex = 0;
+
+    updateCarousel();
+}
+
+document.getElementById("prevBtn").onclick = () => moveCarousel(-1);
+document.getElementById("nextBtn").onclick = () => moveCarousel(1);
+
 </script>
 
 </body>

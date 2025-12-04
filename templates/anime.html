@@ -6,6 +6,7 @@
   <title>Аниме Фигурки на Заказ | FigureArt</title>
   <link rel="stylesheet" href="/static/css/form.css">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/footer.css') }}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -361,14 +362,6 @@
       font-weight: 600;
     }
 
-    footer {
-      background: rgba(255, 255, 255, 0.5);
-      backdrop-filter: blur(24px);
-      border-top: 1px solid rgba(255, 255, 255, 0.3);
-      padding: 3rem 2rem;
-      margin-top: 4rem;
-    }
-
     .footer-content {
       max-width: 1200px;
       margin: 0 auto;
@@ -408,7 +401,7 @@
       color: #6b7280;
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 1080px) {
       .nav-links {
         display: none;
       }
@@ -493,40 +486,27 @@
             </div>
           </div>
           <div class="glass-card gallery-item">
-            <img src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=800&q=80" alt="Чиби стиль">
+            <img src="https://itadakima.su/images/product_images/popup_images/18146_0.jpg" alt="Чиби стиль">
             <div class="gallery-overlay">
               <h3>Дмитрий</h3>
-              <p>Чиби стиль (супер милый)</p>
+              <p>Мику</p>
             </div>
           </div>
           <div class="glass-card gallery-item">
-            <img src="https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?w=800&q=80" alt="Современный аниме">
+            <img src="https://janime.ru/upload/dev2fun.imagecompress/webp/medialibrary/716/2rer0ife5x6g3h7530mpcdextjuvocpg/content_img.webp" alt="Современный аниме">
             <div class="gallery-overlay">
               <h3>Елена</h3>
               <p>Современный аниме стиль</p>
             </div>
           </div>
           <div class="glass-card gallery-item">
-            <img src="https://images.unsplash.com/photo-1603573355706-0e1326a7dea4?w=800&q=80" alt="Школьная форма">
+            <img src="https://www.pulsar.ua/files/webp/img_products/full_FIGURE-140982_06.webp" alt="Школьная форма">
             <div class="gallery-overlay">
               <h3>Мария</h3>
-              <p>В школьной форме</p>
+              <p>Комнатный стиль</p>
             </div>
           </div>
-          <div class="glass-card gallery-item">
-            <img src="https://images.unsplash.com/photo-1618336753974-aae8e04506aa?w=800&q=80" alt="Магическая тематика">
-            <div class="gallery-overlay">
-              <h3>Сергей</h3>
-              <p>Магическая тематика</p>
-            </div>
-          </div>
-          <div class="glass-card gallery-item">
-            <img src="https://images.unsplash.com/photo-1619976215249-0f18ad8e6a17?w=800&q=80" alt="Спортивный стиль">
-            <div class="gallery-overlay">
-              <h3>Игорь</h3>
-              <p>Спортивный аниме стиль</p>
-            </div>
-          </div>
+  
         </div>
       </div>
     </section>
@@ -622,34 +602,7 @@
 
   </main>
 
-  <footer>
-    <div class="footer-content">
-      <div class="footer-section">
-        <h3>FigureArt</h3>
-        <p style="color: #6b7280;">Создаём уникальные персонализированные фигурки по фотографиям</p>
-      </div>
-      <div class="footer-section">
-        <h3>Услуги</h3>
-        <ul>
-          <li><a href="#">Индивидуальные фигурки</a></li>
-          <li><a href="#">Семейные композиции</a></li>
-          <li><a href="#">Парные фигурки</a></li>
-          <li><a href="#">Свадебные фигурки</a></li>
-        </ul>
-      </div>
-      <div class="footer-section">
-        <h3>Контакты</h3>
-        <ul>
-          <li>📞 +7 (999) 123-45-67</li>
-          <li>📧 info@figureart.ru</li>
-          <li>📍 Москва, Россия</li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>&copy; 2024 FigureArt. Все права защищены.</p>
-    </div>
-  </footer>
+  {% include '_footer.html' %}
 
   <script>
 document.addEventListener("DOMContentLoaded", () => {
