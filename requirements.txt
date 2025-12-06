@@ -16,3 +16,4 @@ Flask-Login
 Werkzeug
 gunicorn
 python-dotenv
+Flask-Mail
