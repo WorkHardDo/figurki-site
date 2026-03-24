@@ -225,9 +225,9 @@ def dashboard():
                 flash("Неверный email или пароль", "danger")
                 return redirect(url_for('dashboard'))
 
-            if not user.confirmed:
-                flash("Подтвердите email, прежде чем войти.", "warning")
-                return redirect(url_for('dashboard'))
+            #if not user.confirmed:
+            #    flash("Подтвердите email, прежде чем войти.", "warning")
+            #    return redirect(url_for('dashboard'))
 
             login_user(user)
             return redirect(url_for('cabinet'))
@@ -257,13 +257,13 @@ def dashboard():
                 name=name,
                 phone=phone,
                 address=address,
-                confirmed=False
+                confirmed=True
             )
 
         db.session.add(new_user)
         db.session.commit()
 
-        send_confirmation_email(new_user)
+        #send_confirmation_email(new_user)
 
         flash("Регистрация успешна! Подтвердите email, чтобы войти.", "success")
         return redirect(url_for('dashboard'))
